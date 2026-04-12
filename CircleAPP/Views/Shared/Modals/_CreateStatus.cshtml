@@ -1,0 +1,88 @@
+﻿
+@model PostVM
+
+<div class="hidden lg:p-20" id="create-status" uk-modal="">
+    <div class="uk-modal-dialog tt relative overflow-hidden mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full">
+        
+        @* Header *@
+        <div class="text-center py-4 border-b mb-0">
+            <h2 class="text-sm font-medium text-black">Create Status</h2>
+            <button type="button" class="button-icon absolute top-0 right-0 m-2.5 uk-modal-close">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        @* Form *@
+        <form asp-controller="Home" asp-action="CreatePost" enctype="multipart/form-data" method="post">
+            <div class="space-y-5 mt-3 p-4">
+                <textarea class="w-full !text-black placeholder:!text-gray-400 !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl resize-none"
+                          asp-for="Content"
+                          rows="3"
+                          placeholder="What do you have in mind?"></textarea>
+            </div>
+
+            @* Image Preview Container *@
+            <div class="px-4">
+                <div id="imagePreviewContainer" class="hidden relative w-full mb-3">
+                    <img id="imagePreview" src="#" class="w-full max-h-72 object-cover rounded-lg border" />
+                    <button type="button" id="removeImageBtn" class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black transition-all">
+                        <ion-icon name="close-outline" class="text-xl"></ion-icon>
+                    </button>
+                </div>
+            </div>
+
+            @* Footer Actions *@
+            <div class="flex items-center gap-2 text-sm py-2 px-4 font-medium flex-wrap border-t">
+                <input id="imageUpload" type="file" class="hidden" asp-for="Image" accept="image/png, image/jpeg" />
+
+                <button type="button" id="imageUploadBtn" class="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1.5 px-3 border-2 border-sky-100 hover:bg-sky-100 transition-all">
+                    <ion-icon name="image" class="text-lg"></ion-icon> Image
+                </button>
+            </div>
+
+            <div class="p-4 flex justify-end items-center">
+                <button type="submit" class="button bg-blue-600 hover:bg-blue-700 text-white py-2 px-10 rounded-lg font-semibold shadow-md transition-all"> 
+                    Create Post
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const imageUpload = document.getElementById('imageUpload');
+    const imageUploadBtn = document.getElementById('imageUploadBtn');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+
+    // Trigger file input
+    imageUploadBtn.addEventListener('click', () => {
+        imageUpload.click();
+    });
+
+    // Handle image selection and preview
+    imageUpload.addEventListener('change', function() {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.setAttribute('src', e.target.result);
+                imagePreviewContainer.classList.remove('hidden');
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle remove image
+    removeImageBtn.addEventListener('click', () => {
+        imageUpload.value = ""; // Clear input
+        imagePreview.setAttribute('src', "#");
+        imagePreviewContainer.classList.add('hidden');
+    });
+</script>

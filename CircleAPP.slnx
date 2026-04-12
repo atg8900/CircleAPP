@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="CircleApp.Data/CircleApp.Data.csproj" Id="009bb899-a3a7-4a12-9e44-cee87ccf1b53" />
   <Project Path="CircleAPP/CircleAPP.csproj" />
 </Solution>
