@@ -1,3 +1,6 @@
+using CircleApp.Data.Helpers;
+using CircleApp.Data.Models;
+using CircleApp.Data.Services;
 using CircleAPP.Data;
 using CircleAPP.Models;
 using CircleAPP.ViewModels.Home;
@@ -10,21 +13,22 @@ namespace CircleAPP.Controllers
     public class HomeController : Controller
     {
         private readonly AppDbContext _context;
-
-        public HomeController(AppDbContext context)
+        private readonly IPostService _postService;
+        private readonly IHashtagService _hashtagService;
+        private readonly IFilesService _filesService;
+        public HomeController(IHashtagService hashtagService, IPostService postService, IFilesService filesService)
         {
-            _context = context;
+            _hashtagService = hashtagService;
+            _postService = postService;
+            _filesService = filesService;
         }
-        public async Task <IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            var allposts = await _context.Posts
-                .Include(p => p.User)
-                .OrderByDescending(p => p.DateCreated)
-                .ToListAsync(); 
+            int LoggedInUserId = 1;
+            var allposts = await _postService.GetAllPostsAsync(LoggedInUserId);
+
             return View(allposts);
-
         }
-
         public IActionResult Privacy()
         {
             return View();
@@ -41,6 +45,9 @@ namespace CircleAPP.Controllers
         {
             // Get the logged in user (Hardcoded for now)
             int loggedInUser = 1;
+            
+            // Upload the image
+            var imageUploadPath = await _filesService.UploadImageAsync(post.Image, CircleApp.Data.Helpers.Enums.ImageFileType.PostImage);
 
             // Create a new post object
             var newPost = new Post
@@ -48,35 +55,97 @@ namespace CircleAPP.Controllers
                 Content = post.Content,
                 DateCreated = DateTime.UtcNow,
                 DateUpdated = DateTime.UtcNow,
-                ImageUrl = "",
+                ImageUrl = imageUploadPath,
                 NrOfReports = 0,
                 UserId = loggedInUser
             };
             //Check and save the image
-            if (post.Image != null && post.Image.Length > 0)
-            {
-                string rootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                if (post.Image.ContentType.Contains("image"))
-                {
-                    string rootFolderPathImages = Path.Combine(rootFolderPath, "images");
-                    Directory.CreateDirectory(rootFolderPathImages);
 
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(post.Image.FileName);
-                    string filePath = Path.Combine(rootFolderPathImages, fileName);
+            await _postService.CreatePostAsync(newPost);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await post.Image.CopyToAsync(stream);
-                    }
+            await _hashtagService.ProcessHashtagsForNewPostAsync(newPost.Content);
 
-                    
-                    newPost.ImageUrl = "/images/" + fileName;
-                }
-            }
-            await _context.Posts.AddAsync(newPost); 
-            await _context.SaveChangesAsync();
+          
 
             return RedirectToAction("Index"); 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> TogglePostLike(PostLikeVM postLikeVM)
+        {
+            
+            int loggedInUserId = 1;
+            await _postService.TogglePostLikeAsync(postLikeVM.PostId, loggedInUserId);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> AddPostComment(PostCommentVM postCommentVM)
+        {
+            int loggedInUserId = 1;
+            
+
+            //Create a post object
+            var newComment = new Comment()
+            {
+                UserId = loggedInUserId,
+                PostId = postCommentVM.PostId,
+                Content = postCommentVM.Content,
+                DateCreated = DateTime.UtcNow,
+                DateUpdated = DateTime.UtcNow
+            };
+
+            await _postService.AddPostCommentAsync(newComment);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemovePostComment(RemoveCommentVM removeCommentVM)
+        {
+            await _postService.RemovePostCommentAsync(removeCommentVM.CommentId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavoriteVM)
+        {
+
+            int loggedInUserId = 1;
+            await _postService.TogglePostFavoriteAsync(postFavoriteVM.PostId, loggedInUserId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TogglePostVisibility(PostVisibilityVM postVisibilityVM)
+        {
+            
+            int loggedInUserId = 1;
+
+         await _postService.TogglePostVisibilityAsync(postVisibilityVM.PostId, loggedInUserId);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPostReport(PostReportVM postReportVM)
+        {
+            
+            int loggedInUserId = 1;
+            
+           await _postService.ReportPostAsync(postReportVM.PostId, loggedInUserId);
+
+            return RedirectToAction("Index");
+        }
+
+
+        //PostDelete
+        [HttpPost]
+        public async Task<IActionResult> PostRemove(PostRemoveVM postRemoveVM)
+        {
+            var removedPost = await _postService.RemovePostAsync(postRemoveVM.PostId);
+            await _hashtagService.ProcessHashtagsForRemovedPostAsync(removedPost.Content);
+            return RedirectToAction("Index");
+        }
+
     }
 }

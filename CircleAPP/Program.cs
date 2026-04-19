@@ -1,4 +1,5 @@
 using CircleApp.Data.Helpers;
+using CircleApp.Data.Services;
 using CircleAPP.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,10 @@ namespace CircleAPP
             builder.Configuration.GetConnectionString("Default");
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+            builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<IHashtagService, HashtagService>();
+            builder.Services.AddScoped<IStoriesService, StoriesService>();
+            builder.Services.AddScoped<IFilesService, FilesService>();
 
             var app = builder.Build();
             //seed data
