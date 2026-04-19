@@ -14,6 +14,7 @@ namespace CircleAPP.Models
         public bool IsPrivate { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateUpdated { get; set; }
+        public bool IsDeleted { get; set; }
         //fk
         public int UserId { get; set; }
         //navigation properties
