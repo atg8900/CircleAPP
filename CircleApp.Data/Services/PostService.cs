@@ -184,9 +184,17 @@ namespace CircleApp.Data.Services
             }
         }
 
-       
+        public async Task<Post> GetPostByIdAsync(int postId)
+        {
+            var allPosts = await _context.Posts
+                           .Include(n => n.User)
+                           .Include(n => n.Likes)
+                           .Include(n => n.Favorites)
+                           .Include(n => n.Comments)
+                           .ThenInclude(n => n.User)
+                           .FirstOrDefaultAsync(n => n.Id == postId);
 
-
-
+            return allPosts;
+        }
     }
 }

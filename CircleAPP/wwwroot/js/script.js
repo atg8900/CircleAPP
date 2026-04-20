@@ -1,26 +1,12 @@
-// 1. Dark Mode Logic (يفضل أن يظل في الأعلى لضمان سرعة التنفيذ)
-if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-} else {
-    document.documentElement.classList.remove('dark');
-}
+// 1. Force Light Mode (Removed Dark Mode Logic)
+document.documentElement.classList.remove('dark');
+localStorage.removeItem('theme');
 
 // 2. وظائف تغيير الثيم (يمكنك مناداتها من أزرار الـ HTML)
 function setTheme(mode) {
-    if (mode === 'dark') {
-        localStorage.theme = 'dark';
-        document.documentElement.classList.add('dark');
-    } else if (mode === 'light') {
-        localStorage.theme = 'light';
-        document.documentElement.classList.remove('dark');
-    } else {
-        localStorage.removeItem('theme');
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }
+    // تم إلغاء الوضع الليلي بناءً على طلب المستخدم
+    localStorage.theme = 'light';
+    document.documentElement.classList.remove('dark');
 }
 
 // 3. كود المعاينة والعمليات بعد تحميل الصفحة

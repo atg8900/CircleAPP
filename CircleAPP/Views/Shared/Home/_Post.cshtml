@@ -23,6 +23,8 @@
     bool isReported = Model.Reports.Any(n => n.UserId == 1);
     bool isLiked = Model.Likes.Any(n => n.UserId == 1);
     bool isPrivate = Model.IsPrivate == true && Model.UserId == 1;
+
+    bool showAllComments = ViewData["ShowAllComment"] as bool? ?? false;
 }
 
 <div class="bg-white rounded-xl shadow-sm text-sm font-medium border1">
@@ -77,18 +79,22 @@
     </div>
 
     @* Post content *@
-    <div class="sm:px-4 p-2.5 pt-0 w-full">
-        <p class="font-normal">
-            @Model.Content
-        </p>
-    </div>
+    <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.Id">
+        <div class="sm:px-4 p-2.5 pt-0 w-full">
+            <p class="font-normal">
+                @Model.Content
+            </p>
+        </div>
+    </a>
 
     @* Post image *@
     @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {
-        <div class="relative w-full lg:h-96 h-full sm:px-4">
-            <img src="@Model.ImageUrl" class="sm:rounded-lg object-cover w-full h-full" alt="Post Image" />
-        </div>
+       <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.Id">
+            <div class="relative w-full lg:h-96 h-full sm:px-4">
+                <img src="@Model.ImageUrl" class="sm:rounded-lg object-cover w-full h-full" alt="Post Image" />
+            </div>
+       </a>
     }
 
     @* Icons *@
@@ -128,7 +134,9 @@
     @* Add comment section *@
     <div>  
         <div class="p-2.5 border-t border-gray-100 font-normal space-y-3 relative">
-            @foreach (var comment in Model.Comments.OrderByDescending(n => n.DateCreated).Take(3))
+            @foreach (var comment in showAllComments 
+            ? Model.Comments.OrderByDescending(n => n.DateCreated) 
+            : Model.Comments.OrderByDescending(n => n.DateCreated).Take(2))
             {
                 
                 TimeSpan ts = DateTime.UtcNow.Subtract(comment.DateCreated);
@@ -178,10 +186,10 @@
                 </div>
             }
         </div>
-        @if (Model.Comments.Count >= 3)
+        @if (Model.Comments.Count >= 3 && !showAllComments)
         {
             <div class="p-1.5">
-                <a href="#" class="text-sm font-semibold text-gray-500 hover:underline">
+                <a  asp-controller="Home" asp-action="Details" asp-route-postId="@Model.Id" class="text-sm font-semibold text-gray-500 hover:underline">
                     Show all comments
                 </a>
             </div>

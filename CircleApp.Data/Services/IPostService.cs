@@ -10,6 +10,7 @@ namespace CircleApp.Data.Services
     public interface IPostService
     {
         Task<List<Post>> GetAllPostsAsync(int loggedInUserId);
+        Task<Post> GetPostByIdAsync(int postId);
 
         Task<List<Post>> GetAllFavoritedPostsAsync(int loggedInUserId);
         Task<Post> CreatePostAsync(Post post);
@@ -22,7 +23,7 @@ namespace CircleApp.Data.Services
         Task TogglePostLikeAsync(int postId, int userId);
 
         Task TogglePostFavoriteAsync(int postId, int userId);
-        Task  TogglePostVisibilityAsync(int postId, int userId);
+        Task TogglePostVisibilityAsync(int postId, int userId);
         Task ReportPostAsync(int postId, int userId);
     }
 }

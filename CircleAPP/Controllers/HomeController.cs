@@ -34,6 +34,11 @@ namespace CircleAPP.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Details(int postId)
+        {
+            var post = await _postService.GetPostByIdAsync(postId);
+            return View(post);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
