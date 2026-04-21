@@ -1,43 +1,50 @@
-﻿using CircleApp.Data.Services;
+﻿using CircleApp.Data.Helpers.Enums;
+using CircleApp.Data.Models;
+using CircleApp.Data.Services;
+using CircleAPP.Controllers.Base;
 using CircleAPP.ViewModels.Settings;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
 
 namespace CircleAPP.Controllers
 {
-    public class SettingsController : Controller
+    [Authorize]
+    public class SettingsController : BaseController
     {
         private readonly IUsersService _usersService;
         private readonly IFilesService _filesService;
-        public SettingsController(IUsersService usersService, IFilesService filesService)
+        private readonly UserManager<User> _userManager;
+        public SettingsController(IUsersService usersService,
+            IFilesService filesService,
+            UserManager<User> userManager)
         {
             _usersService = usersService;
             _filesService = filesService;
+            _userManager = userManager;
         }
+
         public async Task<IActionResult> Index()
         {
-            var loggedInUserId = 1;
-            var user = await _usersService.GetUser(loggedInUserId);
-            return View(user);
+            var loggedInUser = await _userManager.GetUserAsync(User);
+            return View(loggedInUser);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProfilePicture(UpdateProfilePictureVM profilePicturevm)
+        public async Task<IActionResult> UpdateProfilePicture(UpdateProfilePictureVM profilePictureVM)
         {
-            var loggedInUserId = 1;
-            var imageUploadPath = await _filesService.UploadImageAsync(profilePicturevm.ProfilePictureImage, CircleApp.Data.Helpers.Enums.ImageFileType.ProfilePicture);
-            await _usersService.UpdateUserProfilePicture(loggedInUserId, imageUploadPath);
+            var loggedInUserId = GetUserId();
+            if (loggedInUserId == null) return RedirectToLogin();
+
+            var uploadedProfilePictureUrl = await _filesService.UploadImageAsync(profilePictureVM.ProfilePictureImage, ImageFileType.ProfilePicture);
+
+            await _usersService.UpdateUserProfilePicture(loggedInUserId.Value, uploadedProfilePictureUrl);
+
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateProfile(UpdateProfileVM profileVm)
-        {
-            return RedirectToAction("Index");
-        }
-        [HttpPost]
-        public async Task<IActionResult> UpdatePassword(UpdatePasswordVM updatePasswordVMD)
-        {
-            return RedirectToAction("Index");
-        }
+
     }
 }

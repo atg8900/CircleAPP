@@ -1,47 +1,48 @@
 ﻿using CircleApp.Data.Helpers.Enums;
 using CircleApp.Data.Models;
 using CircleApp.Data.Services;
+using CircleAPP.Controllers.Base;
 using CircleAPP.Data;
 using CircleAPP.Models;
 using CircleAPP.ViewModels.Home;
 using CircleAPP.ViewModels.Stories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CircleAPP.Controllers
 {
-    public class StoriesController : Controller
+    [Authorize]
+    public class StoriesController : BaseController
     {
         private readonly IStoriesService _storiesService;
         private readonly IFilesService _filesService;
-
-        public StoriesController(IStoriesService storiesService ,IFilesService filesService)
+        public StoriesController(IStoriesService storiesService,
+            IFilesService filesService)
         {
             _storiesService = storiesService;
-            _filesService = filesService;   
+            _filesService = filesService;
         }
-      
 
         [HttpPost]
         public async Task<IActionResult> CreateStory(StoryVM storyVM)
         {
-            // Get the logged in user (Hardcoded for now)
-            int loggedInUser = 1;
-            var imageUploadPath = await _filesService.UploadImageAsync(storyVM.Image,ImageFileType.StoryImage);
+            var loggedInUserId = GetUserId();
+            if (loggedInUserId == null) return RedirectToLogin();
+
+            var imageUploadPath = await _filesService.UploadImageAsync(storyVM.Image, ImageFileType.StoryImage);
+
             var newStory = new Story
             {
-               
                 DateCreated = DateTime.UtcNow,
-                ImageUrl = imageUploadPath,
                 IsDeleted = false,
-                UserId = loggedInUser
+                ImageUrl = imageUploadPath,
+                UserId = loggedInUserId.Value
             };
-            
 
-            //Check and save the image
-           
-           await _storiesService.CreateStoryAsync(newStory); 
-            return RedirectToAction("Index","Home");
+            await _storiesService.CreateStoryAsync(newStory);
+
+            return RedirectToAction("Index", "Home");
         }
 
     }
