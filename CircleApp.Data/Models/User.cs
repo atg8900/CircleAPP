@@ -1,15 +1,17 @@
 ﻿using CircleAPP.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CircleApp.Data.Models
 {
-    public class User
+    public class User: IdentityUser<int>
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string FullName { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public string? Bio { get; set; }
         public bool IsDeleted { get; set; }
         //navigation properties
         public ICollection<Post>Posts { get; set; }= new List<Post>();
