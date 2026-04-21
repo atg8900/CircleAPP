@@ -22,6 +22,8 @@
     string defaultUserPicture = "~/images/avatar/user.png";
 
     bool showAllComments = ViewData["ShowAllComment"] as bool? ?? false;
+
+
 }
 
 <div class="bg-white rounded-xl shadow-sm text-sm font-medium border1">
@@ -31,11 +33,11 @@
         <a>
             @* <img src="@(!string.IsNullOrEmpty(Model.User.ProfilePictureUrl) ? Url.Content("~/" + Model.User.ProfilePictureUrl) : defaultUserPicture)" class="w-9 h-9 rounded-full" /> *@
             @{
-                var normalizedProfilePictureUrl = string.IsNullOrEmpty(Model.User.ProfilePictureUrl)
+                string profileSrc = string.IsNullOrEmpty(Model.User.ProfilePictureUrl)
                     ? Url.Content("~/images/avatar/user.png")
                     : Url.Content("~/" + Model.User.ProfilePictureUrl.TrimStart('/').Replace("\\", "/"));
             }
-            <img src="@normalizedProfilePictureUrl" class="sm:w-9 sm:h-9 w-7 h-7 rounded-full shadow shrink-0" />
+            <img src="@profileSrc" class="sm:w-9 sm:h-9 w-7 h-7 rounded-full shadow shrink-0" />
         </a>
         <div class="flex-1">
             <a>
@@ -78,11 +80,13 @@
     </div>
 
     @* Post content *@
-    <div class="sm:px-4 p-2.5 pt-0 w-full">
-        <p class="font-normal">
-            @Model.Content
-        </p>
-    </div>
+    <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.Id">
+        <div class="sm:px-4 p-2.5 pt-0 w-full">
+            <p class="font-normal">
+                @Model.Content
+            </p>
+        </div>
+    </a>
 
     @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {

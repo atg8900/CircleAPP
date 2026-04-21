@@ -22,6 +22,7 @@ namespace CircleAPP
             builder.Services.AddScoped<IHashtagService, HashtagService>();
             builder.Services.AddScoped<IStoriesService, StoriesService>();
             builder.Services.AddScoped<IFilesService, FilesService>();
+            builder.Services.AddScoped<IUsersService, UsersService>();
 
             //Identity configuration
             builder.Services.AddIdentity<User, IdentityRole<int>>(
