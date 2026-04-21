@@ -164,7 +164,13 @@
 
                 <div class="flex items-start gap-3 relative">
                     <a>
-                        <img src="@(!string.IsNullOrEmpty(comment.User.ProfilePictureUrl) ? Url.Content("~/" + comment.User.ProfilePictureUrl) : defaultUserPicture)" class="w-6 h-6 mt-1 rounded-full" />
+                        @* <img src="@(!string.IsNullOrEmpty(comment.User.ProfilePictureUrl) ? Url.Content("~/" + comment.User.ProfilePictureUrl) : defaultUserPicture)" class="w-6 h-6 mt-1 rounded-full" /> *@
+                        @{
+                            string profileSrcComm = string.IsNullOrEmpty(comment.User.ProfilePictureUrl)
+                                ? Url.Content("~/images/avatar/user.png")
+                                : Url.Content("~/" + comment.User.ProfilePictureUrl.TrimStart('/').Replace("\\", "/"));
+                        }
+                        <img src="@profileSrcComm" class="sm:w-9 sm:h-9 w-7 h-7 rounded-full shadow shrink-0" />
                     </a>
                     <div class="flex-1">
                         <div class="flex justify-content-between">
