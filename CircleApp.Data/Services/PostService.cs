@@ -14,41 +14,52 @@ namespace CircleApp.Data.Services
     public class PostService : IPostService
     {
         private readonly AppDbContext _context;
-
         public PostService(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<List<Post>> GetAllPostsAsync(int LoggedInUserId)
+
+        public async Task<List<Post>> GetAllPostsAsync(int loggedInUserId)
         {
-            var allposts = await _context.Posts
-                .Where(p =>
-                    (!p.IsPrivate || p.UserId == LoggedInUserId) && !p.IsDeleted && p.Reports.Count < 5)
-                .Include(p => p.User)
-                .Include(p => p.Likes)
-                .Include(p => p.Favorites)
-                .Include(p => p.Comments).ThenInclude(c => c.User)
-                .Include(p => p.Reports)
-                .OrderByDescending(p => p.DateCreated)
+            var allPosts = await _context.Posts
+                .Where(n => (!n.IsPrivate || n.UserId == loggedInUserId) && n.Reports.Count < 5 && !n.IsDeleted)
+                .Include(n => n.User)
+                .Include(n => n.Likes)
+                .Include(n => n.Favorites)
+                .Include(n => n.Comments).ThenInclude(n => n.User)
+                .Include(n => n.Reports)
+                .OrderByDescending(n => n.DateCreated)
                 .ToListAsync();
-            return allposts;
+
+            return allPosts;
+        }
+
+        public async Task<Post> GetPostByIdAsync(int postId)
+        {
+            var postDb = await _context.Posts
+               .Include(n => n.User)
+               .Include(n => n.Likes)
+               .Include(n => n.Favorites)
+               .Include(n => n.Comments).ThenInclude(n => n.User)
+               .FirstOrDefaultAsync(n => n.Id == postId);
+
+            return postDb;
         }
 
         public async Task<List<Post>> GetAllFavoritedPostsAsync(int loggedInUserId)
         {
-            var allFavoritedPosts = await _context.Posts
-                
-                .Where(p => p.Favorites.Any(f => f.UserId == loggedInUserId)
-                       && !p.IsDeleted
-                       && p.Reports.Count < 5)
-               
-                .Include(p => p.User)
-                .Include(p => p.Likes)
-                .Include(p => p.Reports)
-                .Include(p => p.Favorites)
-                .Include(p => p.Comments)
+            var allFavoritedPosts = await _context.Favorites
+                .Include(f => f.Post.Reports)
+                .Include(f => f.Post.User)
+                .Include(f => f.Post.Comments)
                     .ThenInclude(c => c.User)
-                .OrderByDescending(p => p.DateCreated)
+                .Include(f => f.Post.Likes)
+                .Include(f => f.Post.Favorites)
+                .Where(n => n.UserId == loggedInUserId &&
+                    !n.Post.IsDeleted &&
+                    n.Post.Reports.Count < 5)
+                .OrderByDescending(f => f.DateCreated)
+                .Select(n => n.Post)
                 .ToListAsync();
 
             return allFavoritedPosts;
@@ -62,15 +73,11 @@ namespace CircleApp.Data.Services
 
         public async Task<Post> CreatePostAsync(Post post)
         {
-            //Check and save the image
-            
-            await _context.Posts.AddAsync(post);    
+            await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
+
             return post;
-
         }
-
-
 
         public async Task<Post> RemovePostAsync(int postId)
         {
@@ -83,6 +90,7 @@ namespace CircleApp.Data.Services
                 _context.Posts.Update(postDb);
                 await _context.SaveChangesAsync();
             }
+
             return postDb;
         }
 
@@ -99,7 +107,7 @@ namespace CircleApp.Data.Services
 
         public async Task ReportPostAsync(int postId, int userId)
         {
-           var newReport = new Report()
+            var newReport = new Report()
             {
                 PostId = postId,
                 UserId = userId,
@@ -112,13 +120,13 @@ namespace CircleApp.Data.Services
 
         public async Task TogglePostFavoriteAsync(int postId, int userId)
         {
+            //check if user has already favorited the post
             var favorite = await _context.Favorites
-                .Where(f => f.PostId == postId && f.UserId == userId)
+                .Where(l => l.PostId == postId && l.UserId == userId)
                 .FirstOrDefaultAsync();
 
             if (favorite != null)
             {
-
                 _context.Favorites.Remove(favorite);
                 await _context.SaveChangesAsync();
             }
@@ -130,63 +138,48 @@ namespace CircleApp.Data.Services
                     UserId = userId,
                     DateCreated = DateTime.UtcNow
                 };
-
                 await _context.Favorites.AddAsync(newFavorite);
                 await _context.SaveChangesAsync();
             }
-
-           
-        }
-
-        public async Task TogglePostVisibilityAsync(int postId, int userId)
-        {
-
-            var post = await _context.Posts
-                .FirstOrDefaultAsync(p => p.Id == postId && p.UserId == userId);
-
-            if (post != null)
-            {
-
-                post.IsPrivate = !post.IsPrivate;
-
-                _context.Posts.Update(post);
-                await _context.SaveChangesAsync();
-            }
-
         }
 
         public async Task TogglePostLikeAsync(int postId, int userId)
         {
-            // check if user has already liked the post
+            //check if user has already liked the post
             var like = await _context.Likes
                 .Where(l => l.PostId == postId && l.UserId == userId)
                 .FirstOrDefaultAsync();
 
             if (like != null)
             {
-                // If like exists, remove it (Unlike)
                 _context.Likes.Remove(like);
                 await _context.SaveChangesAsync();
-
             }
             else
             {
-                // If like doesn't exist, add it (Like)
                 var newLike = new Like()
                 {
                     PostId = postId,
                     UserId = userId
                 };
-
                 await _context.Likes.AddAsync(newLike);
                 await _context.SaveChangesAsync();
-
             }
         }
 
-       
+        public async Task TogglePostVisibilityAsync(int postId, int userId)
+        {
+            //get post by id and loggedin user id
+            var post = await _context.Posts
+                .FirstOrDefaultAsync(l => l.Id == postId && l.UserId == userId);
 
-
+            if (post != null)
+            {
+                post.IsPrivate = !post.IsPrivate;
+                _context.Posts.Update(post);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 }
