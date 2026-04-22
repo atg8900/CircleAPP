@@ -2,6 +2,7 @@ using CircleApp.Data.Helpers;
 using CircleApp.Data.Models;
 using CircleApp.Data.Services;
 using CircleAPP.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,12 +45,13 @@ namespace CircleAPP
                 options.AccessDeniedPath = "/Authentication/AccessDenied";
             });
 
-            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options =>
-            //    {
-            //        options.LoginPath = "/Authentication/Login";
-            //        options.AccessDeniedPath = "/Authentication/AccessDenied";
-            //    });
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddGoogle(options =>
+                {
+                    options.ClientId = builder.Configuration["Auth:Google:ClientId"] ?? "";
+                    options.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"] ?? "";
+                    options.CallbackPath = "/signin-google";
+                });
 
             builder.Services.AddAuthorization();
 
