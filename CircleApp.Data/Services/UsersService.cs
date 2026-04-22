@@ -1,22 +1,23 @@
 ﻿using CircleApp.Data.Models;
 using CircleAPP.Data;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace CircleApp.Data.Services
 {
-    public class UsersService : IUsersService
+    public class UsersService:IUsersService
     {
         private readonly AppDbContext _appDbContext;
-        public UsersService( AppDbContext appDbContext )
+        public UsersService(AppDbContext appDbContext)
         {
-            _appDbContext = appDbContext;   
+            _appDbContext = appDbContext;
         }
+
         public async Task<User> GetUser(int loggedInUserId)
         {
-            return await _appDbContext.Users.FirstOrDefaultAsync(n=>n.Id == loggedInUserId) ?? new User();    
+            return await _appDbContext.Users.FirstOrDefaultAsync(n => n.Id == loggedInUserId) ?? new User();
         }
 
         public async Task UpdateUserProfilePicture(int loggedInUserId, string profilePictureUrl)
