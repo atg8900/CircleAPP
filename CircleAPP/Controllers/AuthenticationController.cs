@@ -163,6 +163,11 @@ namespace CircleAPP.Controllers
             if (info == null)
                 return RedirectToAction("Login");
 
+            //var user = await _userManager.FindByLoginAsync(
+            //    info.Principal.Identity.AuthenticationType,
+            //    info.Principal.FindFirstValue(ClaimTypes.NameIdentifier)
+            //);
+
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 

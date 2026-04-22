@@ -2,9 +2,11 @@ using CircleApp.Data.Helpers;
 using CircleApp.Data.Models;
 using CircleApp.Data.Services;
 using CircleAPP.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CircleAPP
 {
@@ -51,6 +53,13 @@ namespace CircleAPP
                     options.ClientId = builder.Configuration["Auth:Google:ClientId"] ?? "";
                     options.ClientSecret = builder.Configuration["Auth:Google:ClientSecret"] ?? "";
                     options.CallbackPath = "/signin-google";
+                }).AddGitHub(options =>
+                {
+                    options.ClientId = builder.Configuration["Auth:GitHub:ClientId"] ?? "";
+                    options.ClientSecret = builder.Configuration["Auth:GitHub:ClientSecret"] ?? "";
+                    //options.Scope.Add("user:email");
+                    //options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                    options.CallbackPath = "/signin-github";
                 });
 
             builder.Services.AddAuthorization();
