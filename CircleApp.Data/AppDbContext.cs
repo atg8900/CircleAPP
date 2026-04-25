@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CircleAPP.Data
 {
-    public class AppDbContext:IdentityDbContext<User,IdentityRole<int>,int>
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -20,12 +20,15 @@ namespace CircleAPP.Data
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Hashtag> Hashtags { get; set; }
+
+        public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
-                .HasMany(u=>u.Posts)
-                .WithOne(p=>p.User)
-                .HasForeignKey(p=>p.UserId);
+                .HasMany(u => u.Posts)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId);
 
             modelBuilder.Entity<User>()
                .HasMany(u => u.Stories)
@@ -103,7 +106,31 @@ namespace CircleAPP.Data
             modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
 
 
+            //Friendship configurations
+            modelBuilder.Entity<FriendRequest>()
+            .HasOne(fr => fr.Sender)
+            .WithMany()
+            .HasForeignKey(fr => fr.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FriendRequest>()
+            .HasOne(fr => fr.Receiver)
+            .WithMany()
+            .HasForeignKey(fr => fr.ReceiverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Friendship>()
+                        .HasOne(fr => fr.Sender)
+                        .WithMany()
+                        .HasForeignKey(fr => fr.SenderId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friendship>()
+                        .HasOne(fr => fr.Receiver)
+                        .WithMany()
+                        .HasForeignKey(fr => fr.ReceiverId)
+                        .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
-   
