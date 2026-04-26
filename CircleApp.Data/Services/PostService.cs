@@ -1,4 +1,5 @@
-﻿using CircleApp.Data.Models;
+﻿using CircleApp.Data.Dto;
+using CircleApp.Data.Models;
 using CircleAPP.Data;
 using CircleAPP.Models;
 using Microsoft.AspNetCore.Http;
@@ -14,9 +15,11 @@ namespace CircleApp.Data.Services
     public class PostService : IPostService
     {
         private readonly AppDbContext _context;
-        public PostService(AppDbContext context)
+        private readonly INotificationsService _notificationService;
+        public PostService(AppDbContext context, INotificationsService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<List<Post>> GetAllPostsAsync(int loggedInUserId)
@@ -118,8 +121,14 @@ namespace CircleApp.Data.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task TogglePostFavoriteAsync(int postId, int userId)
+        public async Task<GetNotificationDto> TogglePostFavoriteAsync(int postId, int userId)
         {
+            var response = new GetNotificationDto()
+            {
+                Success = true,
+                SendNotification = false
+            };
+
             //check if user has already favorited the post
             var favorite = await _context.Favorites
                 .Where(l => l.PostId == postId && l.UserId == userId)
@@ -140,11 +149,21 @@ namespace CircleApp.Data.Services
                 };
                 await _context.Favorites.AddAsync(newFavorite);
                 await _context.SaveChangesAsync();
+
+                response.SendNotification = true;
             }
+
+            return response;
         }
 
-        public async Task TogglePostLikeAsync(int postId, int userId)
+        public async Task<GetNotificationDto> TogglePostLikeAsync(int postId, int userId)
         {
+            var response = new GetNotificationDto()
+            {
+                Success = true,
+                SendNotification = false
+            };
+
             //check if user has already liked the post
             var like = await _context.Likes
                 .Where(l => l.PostId == postId && l.UserId == userId)
@@ -164,7 +183,11 @@ namespace CircleApp.Data.Services
                 };
                 await _context.Likes.AddAsync(newLike);
                 await _context.SaveChangesAsync();
+
+
+                response.SendNotification = true;
             }
+            return response;
         }
 
         public async Task TogglePostVisibilityAsync(int postId, int userId)
@@ -180,6 +203,5 @@ namespace CircleApp.Data.Services
                 await _context.SaveChangesAsync();
             }
         }
-
     }
 }

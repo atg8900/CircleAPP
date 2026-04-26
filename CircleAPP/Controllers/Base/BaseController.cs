@@ -12,6 +12,11 @@ namespace CircleAPP.Controllers.Base
                 return null;
             return int.Parse(loggedInUserId);
         }
+        protected string? GetUserFullName()
+        {
+            var loggedInUserFullName = User.FindFirstValue(ClaimTypes.Name);
+            return loggedInUserFullName;
+        }
 
         protected IActionResult RedirectToLogin()
         {

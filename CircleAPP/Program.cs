@@ -2,6 +2,7 @@ using CircleApp.Data.Helpers;
 using CircleApp.Data.Models;
 using CircleApp.Data.Services;
 using CircleAPP.Data;
+using CircleAPP.Data.Hubs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,7 @@ namespace CircleAPP
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddScoped<INotificationsService, NotificationsService>();
             builder.Services.AddControllersWithViews();
             builder.Configuration.GetConnectionString("Default");
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -64,6 +66,7 @@ namespace CircleAPP
                 });
 
             builder.Services.AddAuthorization();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
             //seed data
@@ -96,7 +99,7 @@ namespace CircleAPP
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
-
+            app.MapHub<NotificationHub>("/notificationHub");
             app.Run();
         }
     }

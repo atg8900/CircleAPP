@@ -143,5 +143,6 @@ namespace CircleApp.Data.Services
 
             return friends;
         }
+ 
     }
 }
