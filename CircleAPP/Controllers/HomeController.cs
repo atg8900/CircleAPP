@@ -1,13 +1,16 @@
 using CircleApp.Data.Helpers;
+using CircleApp.Data.Helpers.Constants;
 using CircleApp.Data.Helpers.Enums;
 using CircleApp.Data.Models;
 using CircleApp.Data.Services;
 using CircleAPP.Controllers.Base;
 using CircleAPP.Data;
+using CircleAPP.Data.Hubs;
 using CircleAPP.Models;
 using CircleAPP.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -16,24 +19,24 @@ namespace CircleAPP.Controllers
     [Authorize]
     public class HomeController : BaseController
     {
-
-
         private readonly ILogger<HomeController> _logger;
         private readonly IPostService _postsService;
         private readonly IHashtagService _hashtagsService;
         private readonly IFilesService _filesService;
+        private readonly INotificationsService _notificationsService;
 
         public HomeController(ILogger<HomeController> logger,
             IPostService postsService,
             IHashtagService hashtagsService,
-            IFilesService filesService)
+            IFilesService filesService,
+            INotificationsService notificationsService)
         {
             _logger = logger;
             _postsService = postsService;
             _hashtagsService = hashtagsService;
             _filesService = filesService;
+            _notificationsService = notificationsService;
         }
-
 
         public async Task<IActionResult> Index()
         {
@@ -80,24 +83,37 @@ namespace CircleAPP.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> TogglePostLike(PostLikeVM postLikeVM)
         {
-            var loggedInUserId = GetUserId();
-            if (loggedInUserId == null) return RedirectToLogin();
+            var userId = GetUserId();
+            var userName = GetUserFullName();
+            if (userId == null) return RedirectToLogin();
 
-            await _postsService.TogglePostLikeAsync(postLikeVM.PostId, loggedInUserId.Value);
+            var result = await _postsService.TogglePostLikeAsync(postLikeVM.PostId, userId.Value);
+            var post = await _postsService.GetPostByIdAsync(postLikeVM.PostId);
 
-            return RedirectToAction("Index");
+            if (result.SendNotification && userId != post.UserId)
+                await _notificationsService.AddNewNotificationAsync(post.UserId, NotificationType.Like, userName, postLikeVM.PostId);
+
+            return PartialView("Home/_Post", post);
         }
 
         [HttpPost]
         public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavoriteVM)
         {
-            var loggedInUserId = GetUserId();
-            if (loggedInUserId == null) return RedirectToLogin();
-            await _postsService.TogglePostFavoriteAsync(postFavoriteVM.PostId, loggedInUserId.Value);
+            var userId = GetUserId();
+            var userName = GetUserFullName();
+            if (userId == null) return RedirectToLogin();
+            var result = await _postsService.TogglePostFavoriteAsync(postFavoriteVM.PostId, userId.Value);
 
-            return RedirectToAction("Index");
+            var post = await _postsService.GetPostByIdAsync(postFavoriteVM.PostId);
+
+            if (result.SendNotification && userId != post.UserId)
+                await _notificationsService.AddNewNotificationAsync(post.UserId, NotificationType.Favorite, userName, postFavoriteVM.PostId);
+
+
+            return PartialView("Home/_Post", post);
         }
 
 
@@ -112,15 +128,18 @@ namespace CircleAPP.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPostComment(PostCommentVM postCommentVM)
         {
-            var loggedInUserId = GetUserId();
-            if (loggedInUserId == null) return RedirectToLogin();
+            var userId = GetUserId();
+            var userName = GetUserFullName();
+
+            if (userId == null) return RedirectToLogin();
 
             //Creat a post object
             var newComment = new Comment()
             {
-                UserId = loggedInUserId.Value,
+                UserId = userId.Value,
                 PostId = postCommentVM.PostId,
                 Content = postCommentVM.Content,
                 DateCreated = DateTime.UtcNow,
@@ -129,7 +148,12 @@ namespace CircleAPP.Controllers
 
             await _postsService.AddPostCommentAsync(newComment);
 
-            return RedirectToAction("Index");
+            var post = await _postsService.GetPostByIdAsync(postCommentVM.PostId);
+
+            if (userId != post.UserId)
+                await _notificationsService.AddNewNotificationAsync(post.UserId, NotificationType.Comment, userName, postCommentVM.PostId);
+
+            return PartialView("Home/_Post", post);
         }
 
         [HttpPost]
@@ -144,11 +168,13 @@ namespace CircleAPP.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePostComment(RemoveCommentVM removeCommentVM)
         {
             await _postsService.RemovePostCommentAsync(removeCommentVM.CommentId);
 
-            return RedirectToAction("Index");
+            var post = await _postsService.GetPostByIdAsync(removeCommentVM.PostId);
+            return PartialView("Home/_Post", post);
         }
 
         [HttpPost]
