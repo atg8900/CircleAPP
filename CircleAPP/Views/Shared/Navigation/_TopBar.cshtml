@@ -18,11 +18,11 @@
             </button>
 
             <div id="logo" class="flex items-center gap-2">
-                <a asp-controller="Home" class="flex items-center gap-2">
-                    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
-                        <ion-icon name="planet-outline" style="color:#fff;font-size:1.2rem;"></ion-icon>
+                <a asp-controller="Home" class="flex items-center gap-3">
+                    <div style="width:42px;height:42px;border-radius:12px;background:radial-gradient(circle, #ffffff 35%, #6366f1 75%, #a855f7 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
+                        <img src="@Url.Content("~/images/logo.png")" alt="Connecta Logo" style="mix-blend-mode: multiply;" />
                     </div>
-                    <span style="background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;font-size:1.15rem;letter-spacing:-0.02em;">Circle</span>
+                    <span style="font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Connecta</span>
                 </a>
             </div>
         </div>
@@ -31,11 +31,18 @@
     <div class="flex-1 relative">
         <div class="max-w-[1220px] mx-auto flex items-center">
             <form id="search--box"
-                  class="xl:w-[620px] sm:w-80 sm:relative rounded-full overflow-hidden z-20 max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2"
+                  class="xl:w-[620px] sm:w-80 sm:relative rounded-full overflow-hidden z-20 max-md:hidden w-screen left-0 max-sm:fixed max-sm:top-2 flex items-center"
                   style="background:rgba(99,102,241,0.06);border:1.5px solid rgba(99,102,241,0.12);transition:all 0.25s ease;">
-                <ion-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2" style="color:#6366f1;"></ion-icon>
-                <input type="text" name="query" placeholder="Search posts, friends, hashtags..."
-                       class="w-full !pl-11 !font-normal !bg-transparent h-11 !text-sm !border-0 !ring-0 !outline-none" />
+
+                <!-- ICON -->
+                <ion-icon name="search"
+                          style="color:#6366f1;font-size:1.1rem;margin-left:14px;"></ion-icon>
+
+                <!-- INPUT -->
+                <input type="text"
+                       name="query"
+                       placeholder="Search posts, friends, hashtags..."
+                       class="w-full bg-transparent h-11 text-sm border-0 outline-none px-3" />
             </form>
         </div>
 
@@ -81,7 +88,7 @@
                 @* User Avatar + Dropdown *@
                 <div class="relative cursor-pointer shrink-0">
                     <div class="p-0.5 rounded-full" style="background:linear-gradient(135deg,#6366f1,#a855f7);">
-                        <img src="@(string.IsNullOrEmpty(profilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content("~/"+profilePictureUrl))"
+                        <img src="@(string.IsNullOrEmpty(profilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content("~/" + profilePictureUrl.TrimStart('~', '/').Replace("\\", "/")))"
                              class="sm:w-9 sm:h-9 w-8 h-8 rounded-full object-cover border-2 border-white shrink-0" />
                     </div>
 
@@ -92,7 +99,7 @@
                         @* User Header *@
                         <div style="background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px 16px 0 0;padding:20px 16px 28px;">
                             <div class="flex items-center gap-3">
-                                <img src="@(string.IsNullOrEmpty(profilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content("~/"+profilePictureUrl))"
+                                <img src="@(string.IsNullOrEmpty(profilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content("~/" + profilePictureUrl.TrimStart('~', '/').Replace("\\", "/")))"
                                      class="w-12 h-12 rounded-full border-3 border-white shadow object-cover"
                                      style="border:3px solid rgba(255,255,255,0.8);" />
                                 <div>

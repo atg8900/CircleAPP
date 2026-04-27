@@ -260,7 +260,7 @@
 
         @* ── My Friends Panel ── *@
         <div id="panel-friends" class="tab-panel">
-            <div id="friends-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            <div id="friends-grid-container" class="flex flex-col max-w-[500px] mx-auto w-full gap-6">
                 @foreach (var _friendship in Model.Friends)
                 {
                     var friend = _friendship.SenderId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -317,7 +317,7 @@
 
         @* ── Received Requests Panel ── *@
         <div id="panel-received" class="tab-panel hidden">
-            <div id="received-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            <div id="received-grid-container" class="flex flex-col max-w-[500px] mx-auto w-full gap-6">
                 @foreach (var request in Model.FriendRequestsReceived)
                 {
                     <div class="friend-card flex flex-col bg-white rounded-2xl border border-amber-100 shadow-md
@@ -379,7 +379,7 @@
 
         @* ── Pending Invitations Panel ── *@
         <div id="panel-pending" class="tab-panel hidden">
-            <div id="pending-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
+            <div id="pending-grid-container" class="flex flex-col max-w-[500px] mx-auto w-full gap-6">
                 @foreach (var request in Model.FriendRequestsSent)
                 {
                     <div class="friend-card flex flex-col bg-white rounded-2xl border border-purple-100 shadow-md

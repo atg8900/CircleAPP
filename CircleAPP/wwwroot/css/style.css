@@ -1865,3 +1865,9 @@ textarea:focus {
         color: #b91c1c;
         transform: translateY(-2px);
     }
+#search--box {
+    width: 63%;
+}
+#Update-info {
+    margin-top: 15px;
+}

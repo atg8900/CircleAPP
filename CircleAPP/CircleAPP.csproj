@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Shared\Sidebar\" />
+    <Folder Include="wwwroot\images\welcome\" />
     <Folder Include="wwwroot\images\placeholders\" />
   </ItemGroup>
 

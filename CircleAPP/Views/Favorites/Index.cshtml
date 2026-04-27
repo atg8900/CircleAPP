@@ -15,21 +15,22 @@
             <div class="relative overflow-hidden rounded-2xl mb-5
                 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-5 shadow-md">
                 @* Dot pattern overlay *@
-                <div class="absolute inset-0 opacity-10 pointer-events-none"
-                     style="background-image: radial-gradient(circle at 1px 1px, white 1.5px, transparent 0);
-                background-size: 20px 20px;"></div>
+             
+                <div class="flex items-center gap-3">
 
-                <div class="relative flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm
-                        grid place-items-center shrink-0 shadow-sm">
-                        <ion-icon name="bookmark" class="text-white text-2xl"></ion-icon>
+                    <!-- Icon -->
+                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                        <ion-icon name="bookmark-outline" class="text-lg text-gray-600"></ion-icon>
                     </div>
+
+                    <!-- Text -->
                     <div>
-                        <h2 class="text-lg font-extrabold text-white leading-tight">Your Favorites</h2>
-                        <p class="text-sm text-white/70 mt-0.5">
-                            @Model.Count post@(Model.Count == 1 ? "" : "s") saved for later
+                        <h2 class="text-base font-semibold text-gray-800">Your Favorites</h2>
+                        <p class="text-xs text-gray-500">
+                            @Model.Count post@(Model.Count == 1 ? "" : "s") saved
                         </p>
                     </div>
+
                 </div>
             </div>
 
