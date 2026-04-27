@@ -1785,3 +1785,83 @@ textarea:focus {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+/* ACCEPT BUTTON */
+.btn-accept {
+    background: linear-gradient(135deg, #10b981, #14b8a6) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35) !important;
+    transition: all 0.25s ease !important;
+    border: none !important;
+}
+
+.btn-accept:hover {
+    background: linear-gradient(135deg, #059669, #0d9488) !important;
+    transform: translateY(-2px) scale(1.03) !important;
+    box-shadow: 0 12px 25px rgba(16, 185, 129, 0.5) !important;
+}
+
+.btn-accept:active {
+    transform: scale(0.95) !important;
+}
+
+
+/* DECLINE BUTTON */
+.btn-decline {
+    background: #fff0f0 !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15) !important;
+    transition: all 0.25s ease !important;
+}
+
+.btn-decline:hover {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-decline:active {
+    transform: scale(0.92) !important;
+}
+/* ACCEPT (primary) */
+.btn-accept {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981, #14b8a6);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s ease;
+}
+
+    .btn-accept:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(16, 185, 129, 0.4);
+    }
+
+
+/* DECLINE (secondary) */
+.btn-decline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 12px;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .btn-decline:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+        transform: translateY(-2px);
+    }

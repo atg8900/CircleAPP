@@ -1,13 +1,13 @@
 ﻿@using System.Security.Claims;
 @model FriendshipVM;
 
-<main id="site__main" class="2xl:ml-[--w-side] xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top] overflow-y-auto bg-gradient-to-br from-gray-50 via-white to-indigo-50/30">
+<main id="site__main" class="2xl:ml-[--w-side] xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top] overflow-y-auto bg-gradient-to-br from-slate-50 via-white to-indigo-100/40">
     <style>
-            /* Custom animations and enhancements */
+            /* ---------- Custom animations & enhancements ---------- */
             @@keyframes fadeInUp {
                 from {
                     opacity: 0;
-                    transform: translateY(20px);
+                    transform: translateY(24px);
                 }
 
                 to {
@@ -29,11 +29,11 @@
             @@keyframes gentlePulse {
                 0%, 100% {
                     transform: scale(1);
-                    opacity: 0.7;
+                    opacity: 0.8;
                 }
 
                 50% {
-                    transform: scale(1.05);
+                    transform: scale(1.08);
                     opacity: 1;
                 }
             }
@@ -45,55 +45,98 @@
                 }
             }
 
+            @@keyframes cardGlow {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.2);
+                }
+
+                70% {
+                    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+                }
+            }
+
+            /* Card base */
             .friend-card {
                 animation: fadeInUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
-                transition: all 0.3s ease;
+                transition: all 0.25s ease-out;
             }
 
                 .friend-card.remove-animation {
                     animation: slideOut 0.25s ease forwards !important;
                 }
 
+            /* Hover & active button effects */
+            .btn-clickable {
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                cursor: pointer;
+            }
+
+                .btn-clickable:hover {
+                    transform: translateY(-2px);
+                    filter: brightness(1.02);
+                }
+
+                .btn-clickable:active {
+                    transform: translateY(1px) scale(0.97);
+                }
+
+            /* Glow on interactive elements */
             .btn-glow {
                 transition: all 0.2s ease;
             }
 
                 .btn-glow:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.3);
+                    box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.4);
                 }
 
                 .btn-glow:active {
                     transform: translateY(1px);
                 }
 
+            /* Shimmer effect for covers */
             .shimmer-bg {
-                background: linear-gradient(110deg, transparent 8%, rgba(255,255,255,0.5) 18%, transparent 33%);
+                background: linear-gradient(110deg, transparent 8%, rgba(255,255,255,0.4) 18%, transparent 33%);
                 background-size: 200% 100%;
                 animation: shimmer 2s infinite;
             }
 
+            /* Tab button styles */
             .tab-btn {
                 transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                cursor: pointer;
             }
 
                 .tab-btn:active {
                     transform: scale(0.96);
                 }
 
+                .tab-btn.active-tab {
+                    background: white;
+                    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+                    color: #1f2937;
+                }
+
+            /* Badge pulse */
             .badge-pulse {
                 animation: gentlePulse 1.8s infinite;
             }
 
+            /* Card hover lift */
             .hover-lift {
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                transition: transform 0.2s ease, box-shadow 0.25s ease;
             }
 
                 .hover-lift:hover {
-                    transform: translateY(-4px);
-                    box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.15);
+                    transform: translateY(-6px);
+                    box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.2);
                 }
 
+            /* Toast notification */
             .toast-notification {
                 position: fixed;
                 bottom: 24px;
@@ -102,6 +145,60 @@
                 animation: fadeInUp 0.3s ease;
                 backdrop-filter: blur(12px);
             }
+
+            /* Input focus ring */
+            .focus-ring {
+                transition: all 0.2s;
+            }
+
+                .focus-ring:focus {
+                    outline: none;
+                    ring: 2px solid #6366f1;
+                    ring-offset: 2px;
+                }
+
+            /* Ripple effect simulation */
+            .ripple-btn {
+                position: relative;
+                overflow: hidden;
+            }
+
+                .ripple-btn:after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.3);
+                    transform: translate(-50%, -50%);
+                    transition: width 0.3s ease, height 0.3s ease;
+                }
+
+                .ripple-btn:active:after {
+                    width: 200%;
+                    height: 200%;
+                }
+
+            /* Custom scrollbar */
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #c7d2fe;
+                border-radius: 10px;
+            }
+
+                ::-webkit-scrollbar-thumb:hover {
+                    background: #a5b4fc;
+                }
     </style>
 
     <div class="2xl:max-w-[1220px] max-w-[1065px] mx-auto pb-10">
@@ -109,59 +206,61 @@
         @* ── Page Header with animated gradient ── *@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 my-8">
             <div class="relative">
-                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 bg-clip-text text-transparent tracking-tight">Friends</h1>
+                <h1 class="text-4xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
+                    Friends
+                </h1>
                 <p class="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
                     Manage your connections and requests
                 </p>
             </div>
-            <div class="relative w-full sm:w-72 group">
+            <div class="relative w-full sm:w-80 group">
                 <ion-icon name="search-outline"
-                          class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none transition-colors group-focus-within:text-indigo-500"></ion-icon>
+                          class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none transition-colors group-focus-within:text-indigo-500"></ion-icon>
                 <input type="text" id="search-input"
                        placeholder="Search friends by name..."
-                       class="w-full pl-11 pr-4 py-2.5 rounded-xl text-sm border border-gray-200 bg-white/70 backdrop-blur-sm
-                focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100
-                placeholder-gray-400 transition-all duration-200 shadow-sm hover:shadow" />
+                       class="w-full pl-12 pr-4 py-3 rounded-xl text-sm border border-gray-200 bg-white/80 backdrop-blur-sm
+                focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-200/50
+                placeholder-gray-400 transition-all duration-200 shadow-sm hover:shadow-md" />
             </div>
         </div>
 
         @* ── Tab strip with glassmorphism ── *@
-        <div class="flex gap-1.5 bg-white/60 backdrop-blur-md p-1.5 rounded-2xl mb-8 w-fit border border-white/40 shadow-sm">
+        <div class="flex gap-2 bg-white/50 backdrop-blur-lg p-1.5 rounded-2xl mb-8 w-fit border border-white/50 shadow-md">
             <button onclick="switchTab('friends')" id="tab-btn-friends"
                     class="tab-btn active-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
                 bg-white shadow-md text-gray-800 transition-all duration-200 hover:shadow-lg">
                 <ion-icon name="people-outline" class="text-base"></ion-icon>
                 Friends
-                <span id="friends-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-600 transition-all">
+                <span id="friends-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 transition-all">
                     @Model.Friends.Count
                 </span>
             </button>
 
             <button onclick="switchTab('received')" id="tab-btn-received"
                     class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
-                text-gray-600 hover:text-gray-800 transition-all duration-200 hover:bg-white/50">
+                text-gray-600 hover:text-gray-800 transition-all duration-200 hover:bg-white/60">
                 <ion-icon name="mail-unread-outline" class="text-base"></ion-icon>
                 Received
-                <span id="received-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-600 transition-all">
+                <span id="received-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 transition-all">
                     @Model.FriendRequestsReceived.Count
                 </span>
             </button>
 
             <button onclick="switchTab('pending')" id="tab-btn-pending"
                     class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
-                text-gray-600 hover:text-gray-800 transition-all duration-200 hover:bg-white/50">
+                text-gray-600 hover:text-gray-800 transition-all duration-200 hover:bg-white/60">
                 <ion-icon name="paper-plane-outline" class="text-base"></ion-icon>
                 Pending
-                <span id="pending-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 transition-all">
+                <span id="pending-badge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 transition-all">
                     @Model.FriendRequestsSent.Count
                 </span>
             </button>
         </div>
 
-        @* ── My Friends Panel (Enhanced) ── *@
+        @* ── My Friends Panel ── *@
         <div id="panel-friends" class="tab-panel">
-            <div id="friends-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+            <div id="friends-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
                 @foreach (var _friendship in Model.Friends)
                 {
                     var friend = _friendship.SenderId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -171,41 +270,34 @@
                     <div class="friend-card flex flex-col bg-white rounded-2xl border border-gray-100 shadow-md
                         hover:shadow-xl hover:border-indigo-200 transition-all duration-300 group overflow-hidden relative">
                         <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span class="text-[10px] font-bold bg-black/20 backdrop-blur-md text-white px-2 py-1 rounded-full">★ Friend</span>
+                            <span class="text-[10px] font-bold bg-black/30 backdrop-blur-md text-white px-2 py-1 rounded-full shadow-sm">★ Friend</span>
                         </div>
-                        <div class="h-20 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative shrink-0">
-                            <div class="absolute inset-0 opacity-30 shimmer-bg"></div>
+                        <div class="h-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative shrink-0">
+                            <div class="absolute inset-0 opacity-40 shimmer-bg"></div>
                         </div>
                         <div class="px-5 pb-5 flex flex-col flex-1">
                             <div class="-mt-10 mb-3 flex items-end justify-between">
                                 <div class="relative">
                                     <img src="@(string.IsNullOrEmpty(friend.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content(friend.ProfilePictureUrl))"
                                          class="w-20 h-20 rounded-2xl border-4 border-white object-cover shadow-lg
-                                    group-hover:scale-105 transition-transform duration-300 ring-2 ring-white/50" />
+                                    group-hover:scale-105 transition-transform duration-300 ring-2 ring-white/60" />
                                     <span class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm"></span>
                                 </div>
                             </div>
-                            
-                            <div class="flex items-center justify-between mb-4">
-                                <p class="text-base font-bold text-gray-900 truncate">@friend.FullName</p>
-                                <span class="text-[10px] font-semibold bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full border border-white shadow-sm">
-                                    Friend
-                                </span>
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-auto">
+                            <p class="text-lg font-bold text-gray-800 truncate">@friend.FullName</p>
+                            <div class="flex items-center gap-2 mt-auto pt-4">
                                 <a asp-controller="Users" asp-action="Details" asp-route-userId="@friend.Id"
                                    class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold
                                     bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-700
-                                    hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200">
+                                    hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 btn-clickable">
                                     <ion-icon name="person-outline" class="text-sm"></ion-icon>
                                     Profile
                                 </a>
                                 <form asp-controller="Friends" asp-action="RemoveFriend" method="post" class="ajax-friend-form">
                                     <input type="hidden" name="friendshipId" value="@_friendship.Id" />
                                     <button type="submit" title="Remove friend"
-                                            class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 text-red-400
-                                        hover:bg-red-100 hover:text-red-600 transition-all duration-200 hover:scale-105 active:scale-95">
+                                            class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 text-red-500
+                                        hover:bg-red-100 hover:text-red-700 transition-all duration-200 hover:scale-105 active:scale-95 btn-clickable">
                                         <ion-icon name="person-remove-outline" class="text-lg"></ion-icon>
                                     </button>
                                 </form>
@@ -215,131 +307,109 @@
                 }
             </div>
             <div id="friends-empty-state" class="flex flex-col items-center justify-center py-24 text-center @(Model.Friends.Count > 0 ? "hidden" : "")">
-                <div class="w-24 h-24 rounded-3xl bg-indigo-50 grid place-items-center mb-5 shadow-inner">
-                    <ion-icon name="people-outline" class="text-5xl text-indigo-300"></ion-icon>
+                <div class="w-28 h-28 rounded-3xl bg-indigo-100 grid place-items-center mb-5 shadow-inner">
+                    <ion-icon name="people-outline" class="text-6xl text-indigo-300"></ion-icon>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">No friends yet</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">No friends yet</h3>
                 <p class="text-sm text-gray-400 max-w-xs">Start building your network by searching for people you know.</p>
             </div>
         </div>
 
-        @* ── Received Requests Panel (Enhanced) ── *@
+        @* ── Received Requests Panel ── *@
         <div id="panel-received" class="tab-panel hidden">
-            <div id="received-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+            <div id="received-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
                 @foreach (var request in Model.FriendRequestsReceived)
                 {
                     <div class="friend-card flex flex-col bg-white rounded-2xl border border-amber-100 shadow-md
-                        hover:shadow-xl hover:border-amber-200 transition-all duration-300 group overflow-hidden">
-                        <div class="h-20 bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 relative">
-                            <div class="absolute inset-0 opacity-30 shimmer-bg"></div>
+                        hover:shadow-xl hover:border-amber-300 transition-all duration-300 group overflow-hidden">
+                        <div class="h-20 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 relative">
+                            <div class="absolute inset-0 opacity-40 shimmer-bg"></div>
                         </div>
                         <div class="px-5 pb-5 flex flex-col flex-1">
                             <div class="-mt-10 mb-3">
                                 <img src="@(string.IsNullOrEmpty(request.Sender.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content(request.Sender.ProfilePictureUrl))"
-                                     class="w-20 h-20 rounded-2xl border-4 border-white object-cover shadow-lg ring-2 ring-white/50" />
+                                     class="w-20 h-20 rounded-2xl border-4 border-white object-cover shadow-lg ring-2 ring-white/60" />
                             </div>
                             <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.Sender.Id"
-                               class="text-base font-bold text-gray-900 hover:text-indigo-600 truncate transition-colors">
+                               class="text-lg font-bold text-gray-800 hover:text-indigo-600 truncate transition-colors">
                                 @request.Sender.FullName
                             </a>
                             <p class="text-xs text-gray-400 mt-1 mb-5 flex items-center gap-1">
                                 <ion-icon name="chatbubble-ellipses-outline" class="text-xs"></ion-icon> Wants to connect
                             </p>
-                            <div class="flex items-center gap-2 mt-auto">
-                                <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post" class="ajax-friend-form flex-1">
-                                    <input type="hidden" name="requestId" value="@request.Id" />
-                                    <input type="hidden" name="status" value="@FriendshipStatus.Accepted" />
-                                    <button type="submit"
-                                            class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold
-                                        bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md
-                                        hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 hover:scale-[1.02] active:scale-95">
-                                        <ion-icon name="checkmark-circle-outline" class="text-base"></ion-icon>
-                                        Accept
-                                    </button>
-                                </form>
-                                <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post" class="ajax-friend-form">
-                                    <input type="hidden" name="requestId" value="@request.Id" />
-                                    <input type="hidden" name="status" value="@FriendshipStatus.Rejected" />
-                                    <button type="submit" title="Decline request"
-                                            class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 text-red-400
-                                        hover:bg-red-100 hover:text-red-600 transition-all duration-200 hover:scale-105 active:scale-95">
-                                        <ion-icon name="close-outline" class="text-xl"></ion-icon>
-                                    </button>
-                                </form>
+                            <div class="flex items-center justify-center mt-4">
+                                <div class="flex gap-3">
+
+                                    <!-- ACCEPT -->
+                                    <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post">
+                                        <input type="hidden" name="requestId" value="@request.Id" />
+                                        <input type="hidden" name="status" value="@FriendshipStatus.Accepted" />
+
+                                        <button type="submit" class="btn-accept px-5">
+                                            <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                            Accept
+                                        </button>
+                                    </form>
+
+                                    <!-- DECLINE -->
+                                    <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post">
+                                        <input type="hidden" name="requestId" value="@request.Id" />
+                                        <input type="hidden" name="status" value="@FriendshipStatus.Rejected" />
+
+                                        <button type="submit" class="btn-decline px-5">
+                                            <ion-icon name="close-outline"></ion-icon>
+                                            Decline
+                                        </button>
+                                    </form>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 }
             </div>
             <div id="received-empty-state" class="flex flex-col items-center justify-center py-24 text-center @(Model.FriendRequestsReceived.Count > 0 ? "hidden" : "")">
-                <div class="w-24 h-24 rounded-3xl bg-amber-50 grid place-items-center mb-5 shadow-inner">
-                    <ion-icon name="mail-unread-outline" class="text-5xl text-amber-300"></ion-icon>
+                <div class="w-28 h-28 rounded-3xl bg-amber-100 grid place-items-center mb-5 shadow-inner">
+                    <ion-icon name="mail-unread-outline" class="text-6xl text-amber-300"></ion-icon>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">No incoming requests</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">No incoming requests</h3>
                 <p class="text-sm text-gray-400 max-w-xs">When someone sends a request, it will appear here.</p>
             </div>
         </div>
 
-        @* ── Pending Invitations Panel (Enhanced) ── *@
+        @* ── Pending Invitations Panel ── *@
         <div id="panel-pending" class="tab-panel hidden">
-            <div id="pending-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
+            <div id="pending-grid-container" class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
                 @foreach (var request in Model.FriendRequestsSent)
                 {
-                    <div class="friend-card flex flex-col bg-white rounded-2xl border border-purple-100 shadow-sm
-                        hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-
-                        <!-- Cover -->
-                        <div class="h-16 bg-gradient-to-br from-violet-400 via-purple-500 to-indigo-400 relative">
-                            <div class="absolute inset-0 opacity-20"
-                                 style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
-                                        background-size: 16px 16px;"></div>
+                    <div class="friend-card flex flex-col bg-white rounded-2xl border border-purple-100 shadow-md
+                        hover:shadow-xl hover:border-purple-200 transition-all duration-300 group overflow-hidden">
+                        <div class="h-20 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 relative">
+                            <div class="absolute inset-0 opacity-40 shimmer-bg"></div>
                         </div>
-
-                        <div class="px-4 pb-4 flex flex-col flex-1">
-
-                            <!-- Avatar -->
-                            <div class="-mt-8 mb-3 flex items-center justify-between">
-                                <div class="relative">
-                                    <img src="@(string.IsNullOrEmpty(request.Receiver.ProfilePictureUrl)
-                                        ? Url.Content("~/images/avatar/user.png")
-                                        : Url.Content(request.Receiver.ProfilePictureUrl))"
-                                         class="w-16 h-16 rounded-2xl border-4 border-white object-cover shadow-md
-                                                group-hover:scale-105 transition-transform duration-300" />
-
-                                    <!-- Pending badge -->
-                                    <span class="absolute -bottom-1 -right-1 px-2 py-0.5 text-[10px] font-semibold
-                                        bg-amber-100 text-amber-600 rounded-full border border-white shadow-sm">
-                                        Pending
-                                    </span>
-                                </div>
+                        <div class="px-5 pb-5 flex flex-col flex-1">
+                            <div class="-mt-10 mb-3">
+                                <img src="@(string.IsNullOrEmpty(request.Receiver.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") : Url.Content(request.Receiver.ProfilePictureUrl))"
+                                     class="w-20 h-20 rounded-2xl border-4 border-white object-cover shadow-lg" />
                             </div>
-
-                            <!-- Name -->
                             <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.Receiver.Id"
-                               class="text-sm font-bold text-gray-900 hover:text-indigo-600 truncate block transition">
+                               class="text-lg font-bold text-gray-800 hover:text-indigo-600 truncate transition-colors">
                                 @request.Receiver.FullName
                             </a>
-
-                            <!-- Status -->
-                            <div class="flex items-center gap-1.5 mt-1 mb-4">
-                                <span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>
-                                <span class="text-xs text-gray-400">Awaiting response</span>
+                            <div class="mt-2 mb-5 flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    Awaiting response
+                                </span>
                             </div>
-
-                            <!-- Cancel Button -->
-                            <form asp-controller="Friends" asp-action="UpdateFriendRequest"
-                                  method="post" class="ajax-friend-form mt-auto">
+                            <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post" class="ajax-friend-form mt-auto">
                                 <input type="hidden" name="requestId" value="@request.Id" />
                                 <input type="hidden" name="status" value="@FriendshipStatus.Canceled" />
-
                                 <button type="submit"
-                                        class="w-full flex items-center justify-center gap-2 px-3 py-2.5
-                                        rounded-xl text-xs font-semibold
-                                        bg-gray-100 text-gray-600
-                                        hover:bg-red-50 hover:text-red-500
-                                        border border-gray-200 hover:border-red-200
-                                        transition-all duration-200">
-                                    <ion-icon name="close-circle-outline"></ion-icon>
+                                        class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold
+                                    bg-gray-100 text-gray-700 hover:bg-rose-50 hover:text-rose-600
+                                    border border-transparent hover:border-rose-200 transition-all duration-200 hover:scale-[1.02] active:scale-95 btn-clickable">
+                                    <ion-icon name="close-circle-outline" class="text-base"></ion-icon>
                                     Cancel Request
                                 </button>
                             </form>
@@ -348,10 +418,10 @@
                 }
             </div>
             <div id="pending-empty-state" class="flex flex-col items-center justify-center py-24 text-center @(Model.FriendRequestsSent.Count > 0 ? "hidden" : "")">
-                <div class="w-24 h-24 rounded-3xl bg-purple-50 grid place-items-center mb-5 shadow-inner">
-                    <ion-icon name="paper-plane-outline" class="text-5xl text-purple-300"></ion-icon>
+                <div class="w-28 h-28 rounded-3xl bg-purple-100 grid place-items-center mb-5 shadow-inner">
+                    <ion-icon name="paper-plane-outline" class="text-6xl text-purple-300"></ion-icon>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">No pending invitations</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">No pending invitations</h3>
                 <p class="text-sm text-gray-400 max-w-xs">Requests you've sent will appear here until accepted.</p>
             </div>
         </div>
@@ -405,7 +475,6 @@
         }
     }
 
-    // update counts for friend operations based on tab
     function handleCardRemoval(card, panelType, badgeDeltaMap) {
         card.classList.add('remove-animation');
         setTimeout(() => {
@@ -486,10 +555,10 @@
             btn.classList.add('bg-white', 'shadow-md', 'text-gray-800');
             btn.classList.remove('text-gray-600');
         }
-        attachAjaxForms(); // reattach after potential DOM updates
+        attachAjaxForms();
     }
 
-    // Enhanced search filtering with smooth transitions and live badge interaction
+    // Enhanced search filtering
     const initSearch = () => {
         const searchInput = document.getElementById('search-input');
         if(searchInput) {
@@ -507,7 +576,6 @@
                         card.style.opacity = '0';
                     }
                 });
-                // refresh empty states for all panels
                 refreshEmptyState('friends');
                 refreshEmptyState('received');
                 refreshEmptyState('pending');
@@ -516,14 +584,12 @@
         }
     };
 
-    // initial load and observers
     document.addEventListener('DOMContentLoaded', () => {
         const activeTab = sessionStorage.getItem('activeFriendsTab') || 'friends';
         switchTab(activeTab);
         initSearch();
         attachAjaxForms();
 
-        // initial badge pulses if count > 0
         if(parseInt(document.getElementById('friends-badge')?.innerText || '0') > 0)
             document.getElementById('friends-badge')?.classList.add('badge-pulse');
         if(parseInt(document.getElementById('received-badge')?.innerText || '0') > 0)
