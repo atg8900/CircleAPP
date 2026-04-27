@@ -1,9 +1,12 @@
 ﻿using CircleApp.Data.Models;
 using CircleAPP.Models;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CircleAPP.ViewModels.Users
+namespace CircleApp.Data.Dto
 {
-    public class GetUserProfileVM
+    public class GetUserProfileDTO
     {
         public User User { get; set; }
         public List<Post> Posts { get; set; }

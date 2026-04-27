@@ -8,7 +8,7 @@ namespace CircleApp.Data.Services
 {
     public interface IStoriesService
     {
-        Task<List<Story>> GetAllStoriesAsync();
+        Task<List<Story>> GetAllStoriesAsync(int userId);
 
         Task<Story> CreateStoryAsync(Story story);
     }

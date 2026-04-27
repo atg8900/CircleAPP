@@ -1,4 +1,4 @@
-﻿@model List<Notification>
+@model List<Notification>
 
 @foreach (var notification in @Model)
 {
@@ -13,12 +13,22 @@
 
     string iconName = notification.Type switch
     {
-        NotificationType.Favorite => "bookmark-outline",
-        NotificationType.Like => "heart-outline",
-        NotificationType.Comment => "chatbubbles-outline",
-        NotificationType.FriendRequest => "person-add-outline",
-        NotificationType.FriendRequestApproved => "person-outline",
-        _ => "notifications-outline"
+        NotificationType.Favorite => "bookmark",
+        NotificationType.Like => "heart",
+        NotificationType.Comment => "chatbubbles",
+        NotificationType.FriendRequest => "person-add",
+        NotificationType.FriendRequestApproved => "people",
+        _ => "notifications"
+    };
+
+    string iconClass = notification.Type switch
+    {
+        NotificationType.Favorite => "fav",
+        NotificationType.Like => "like",
+        NotificationType.Comment => "comment",
+        NotificationType.FriendRequest => "friend",
+        NotificationType.FriendRequestApproved => "friend",
+        _ => "default"
     };
 
     string redirectUrl = notification.Type switch
@@ -28,33 +38,21 @@
         _ => Url.Action("Details", "Home", new { postId = notification.PostId })
     };
 
-    <div class="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery @(notification.IsRead ? "" : "bg-teal-500/5")">
-        <div class="flex items-center gap-2 flex-1">
-            <ion-icon name="@iconName" class="text-2xl"></ion-icon>
-            <div>
-                <p>
-                    <a href="@redirectUrl">
-                        @if (notification.IsRead)
-                        {
-                            @notification.Message
-                        }
-                        else
-                        {
-                            <b class="font-bold mr1">
-                                @notification.Message
-                            </b>
-                        }
-                    </a>
-                </p>
-                <div class="text-xs text-gray-500 mt-1.5">@displayTxt</div>
-
-            </div>
-            
-            @if (notification.IsRead == false)
-            {
-                <div class="w-2.5 h-2.5 bg-teal-600 rounded-full absolute right-3 top-5" onclick="setNotificationAsRead(@notification.Id)"></div>
-            }
-
+    <a href="@redirectUrl" class="block notif-row @(notification.IsRead ? "" : "unread")">
+        <div class="notif-icon @iconClass">
+            <ion-icon name="@iconName"></ion-icon>
         </div>
-    </div>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm leading-snug" style="color:#334155;@(notification.IsRead ? "" : "font-weight:600;")">
+                @notification.Message
+            </p>
+            <div class="text-xs mt-1" style="color:#94a3b8;">@displayTxt</div>
+        </div>
+        @if (!notification.IsRead)
+        {
+            <div onclick="setNotificationAsRead(@notification.Id)"
+                 style="width:9px;height:9px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:50%;flex-shrink:0;cursor:pointer;box-shadow:0 0 6px rgba(99,102,241,0.5);"
+                 title="Mark as read"></div>
+        }
+    </a>
 }

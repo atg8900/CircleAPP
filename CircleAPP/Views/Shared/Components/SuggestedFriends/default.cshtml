@@ -1,28 +1,40 @@
-﻿@model List<CircleApp.ViewModels.Friends.UserWithFriendsCountVM>
-<div class="flex items-baseline justify-between text-black">
-    <h3 class="font-bold text-base"> People you may know </h3>
+@model List<CircleApp.ViewModels.Friends.UserWithFriendsCountVM>
+
+<div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+        <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;">
+            <ion-icon name="people" style="color:#fff;font-size:0.9rem;"></ion-icon>
+        </div>
+        <h3 class="font-bold text-sm" style="color:#1e1b4b;">People You May Know</h3>
+    </div>
 </div>
 
-<div class="side-list">
+<div class="side-list space-y-1">
     @foreach (var user in Model)
     {
-        <div class="side-list-item">
-            <a asp-controller="Users" asp-action="Details" asp-route-userId="1">
-                <img src="@(string.IsNullOrEmpty(user.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") : user.ProfilePictureUrl)" class="side-list-image rounded-full" />
+        <div class="side-list-item flex items-center gap-3 py-2.5 rounded-xl transition-all px-1">
+            <a asp-controller="Users" asp-action="Details" asp-route-userId="@user.UserId" class="shrink-0">
+                <div style="padding:2px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);">
+                    <img src="@(string.IsNullOrEmpty(user.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") : user.ProfilePictureUrl)"
+                         class="side-list-image"
+                         style="border:2px solid #fff;" />
+                </div>
             </a>
-            <div class="flex-1">
-                <a>
-                    <h4 class="side-list-title">
-                        @user.FullName
-                    </h4>
-                </a>
-                <div class="side-list-info">@user.FriendsCountDisplay</div>
+            <div class="flex-1 min-w-0">
+                <h4 class="side-list-title truncate">@user.FullName</h4>
+                <div class="side-list-info flex items-center gap-1">
+                    <ion-icon name="people-outline" style="font-size:0.65rem;"></ion-icon>
+                    @user.FriendsCountDisplay
+                </div>
             </div>
-            <form asp-controller="Friends" asp-action="SendFriendRequest" method="post">
+            <form asp-controller="Friends" asp-action="SendFriendRequest" method="post" class="shrink-0">
                 <input type="hidden" name="receiverId" value="@user.UserId" />
-                <button type="submit" class="button bg-primary-soft text-primary">Follow</button>
+                <button type="submit"
+                        class="text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:scale-105 hover:opacity-90"
+                        style="background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(99,102,241,0.30);">
+                    Follow
+                </button>
             </form>
         </div>
     }
-
 </div>

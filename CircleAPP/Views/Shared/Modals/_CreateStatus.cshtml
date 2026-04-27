@@ -1,50 +1,64 @@
-﻿
+
 @model PostVM
 
 <div class="hidden lg:p-20" id="create-status" uk-modal="">
-    <div class="uk-modal-dialog tt relative overflow-hidden mx-auto bg-white shadow-xl rounded-lg md:w-[520px] w-full">
-        
+    <div class="uk-modal-dialog tt relative overflow-hidden mx-auto bg-white shadow-2xl md:w-[540px] w-full"
+         style="border-radius:24px;box-shadow:0 24px 60px rgba(99,102,241,0.22);border:1px solid rgba(99,102,241,0.08);">
+
         @* Header *@
-        <div class="text-center py-4 border-b mb-0">
-            <h2 class="text-sm font-medium text-black">Create Status</h2>
-            <button type="button" class="button-icon absolute top-0 right-0 m-2.5 uk-modal-close">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+        <div class="relative py-4 px-6 flex items-center border-b"
+             style="border-color:rgba(99,102,241,0.08);background:linear-gradient(135deg,rgba(99,102,241,0.04),rgba(168,85,247,0.03));">
+            <div class="flex items-center gap-2.5 flex-1 justify-center">
+                <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;">
+                    <ion-icon name="create-outline" style="color:#fff;font-size:0.9rem;"></ion-icon>
+                </div>
+                <h2 class="font-bold text-base" style="color:#1e1b4b;">Create Post</h2>
+            </div>
+            <button type="button" class="uk-modal-close absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full transition-all hover:bg-red-50"
+                    style="border:1.5px solid rgba(239,68,68,0.20);color:#f87171;">
+                <ion-icon name="close-outline" style="font-size:1.2rem;"></ion-icon>
             </button>
         </div>
 
         @* Form *@
         <form asp-controller="Home" asp-action="CreatePost" enctype="multipart/form-data" method="post">
-            <div class="space-y-5 mt-3 p-4">
-                <textarea class="w-full !text-black placeholder:!text-gray-400 !bg-white !border-transparent focus:!border-transparent focus:!ring-transparent !font-normal !text-xl resize-none"
+            <div class="p-5">
+                <textarea class="w-full resize-none !border-0 !ring-0 !bg-transparent !text-xl !font-normal !text-slate-700 placeholder:!text-slate-400 focus:outline-none"
                           asp-for="Content"
-                          rows="3"
-                          placeholder="What do you have in mind?"></textarea>
+                          rows="4"
+                          placeholder="What's on your mind? ✨"></textarea>
             </div>
 
             @* Image Preview Container *@
-            <div class="px-4">
-                <div id="imagePreviewContainer" class="hidden relative w-full mb-3">
-                    <img id="imagePreview" src="#" class="w-full max-h-72 object-cover rounded-lg border" />
-                    <button type="button" id="removeImageBtn" class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 hover:bg-black transition-all">
-                        <ion-icon name="close-outline" class="text-xl"></ion-icon>
+            <div class="px-5">
+                <div id="imagePreviewContainer" class="hidden relative w-full mb-4 rounded-xl overflow-hidden border"
+                     style="border-color:rgba(99,102,241,0.15);">
+                    <img id="imagePreview" src="#" class="w-full max-h-64 object-cover" />
+                    <button type="button" id="removeImageBtn"
+                            class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full transition-all hover:scale-110"
+                            style="background:rgba(0,0,0,0.55);border:none;cursor:pointer;color:#fff;">
+                        <ion-icon name="close-outline" style="font-size:1.1rem;"></ion-icon>
                     </button>
                 </div>
             </div>
 
             @* Footer Actions *@
-            <div class="flex items-center gap-2 text-sm py-2 px-4 font-medium flex-wrap border-t">
+            <div class="px-5 py-3 flex items-center gap-2 border-t" style="border-color:rgba(99,102,241,0.08);">
+                <p class="text-xs font-medium mr-auto" style="color:#94a3b8;">Add to your post:</p>
                 <input id="imageUpload" type="file" class="hidden" asp-for="Image" accept="image/png, image/jpeg" />
-
-                <button type="button" id="imageUploadBtn" class="flex items-center gap-1.5 bg-sky-50 text-sky-600 rounded-full py-1.5 px-3 border-2 border-sky-100 hover:bg-sky-100 transition-all">
-                    <ion-icon name="image" class="text-lg"></ion-icon> Image
+                <button type="button" id="imageUploadBtn"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all hover:scale-105"
+                        style="background:rgba(14,165,233,0.10);color:#0ea5e9;border:1.5px solid rgba(14,165,233,0.20);">
+                    <ion-icon name="image-outline" style="font-size:1rem;"></ion-icon>
+                    Photo
                 </button>
             </div>
 
-            <div class="p-4 flex justify-end items-center">
-                <button type="submit" class="button bg-blue-600 hover:bg-blue-700 text-white py-2 px-10 rounded-lg font-semibold shadow-md transition-all"> 
-                    Create Post
+            <div class="p-5 pt-3">
+                <button type="submit"
+                        class="w-full py-3 rounded-xl font-bold text-sm text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0"
+                        style="background:linear-gradient(135deg,#6366f1,#4f46e5);box-shadow:0 4px 14px rgba(99,102,241,0.40);border:none;cursor:pointer;">
+                    Share Post
                 </button>
             </div>
         </form>
@@ -58,12 +72,10 @@
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
     const removeImageBtn = document.getElementById('removeImageBtn');
 
-    // Trigger file input
     imageUploadBtn.addEventListener('click', () => {
         imageUpload.click();
     });
 
-    // Handle image selection and preview
     imageUpload.addEventListener('change', function() {
         const file = this.files[0];
 
@@ -79,10 +91,10 @@
         }
     });
 
-    // Handle remove image
     removeImageBtn.addEventListener('click', () => {
-        imageUpload.value = ""; // Clear input
+        imageUpload.value = "";
         imagePreview.setAttribute('src', "#");
         imagePreviewContainer.classList.add('hidden');
     });
+
 </script>

@@ -1,92 +1,143 @@
-﻿@model LoginVM;
+@model LoginVM;
 
-<div class="sm:flex">
-    @*form section*@
-    <div class="relative lg:w-[580px] md:w-96 w-full p-10 min-h-screen bg-white shadow-xl flex items-center pt-10 z-10">
+<div class="sm:flex min-h-screen" style="font-family:'Inter',sans-serif;">
 
-        <div class="w-full lg:max-w-sm mx-auto space-y-10">
+    @* ── Left: Form Panel ── *@
+    <div class="relative lg:w-[560px] md:w-96 w-full p-10 min-h-screen flex items-center z-10"
+         style="background:#fff;box-shadow:4px 0 30px rgba(99,102,241,0.10);">
 
-            <div>
-                <h2 class="text-2xl font-semibold mb-1.5">Sign in to your account</h2>
-                <p class="text-sm text-gray-700 font-normal">If you have not signed up yet. <a asp-controller="Authentication" asp-action="Register" class="text-blue-700">Register here!</a></p>
+        <div class="w-full lg:max-w-sm mx-auto space-y-8">
+
+            @* Logo *@
+            <div class="flex items-center gap-3">
+                <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
+                    <ion-icon name="planet-outline" style="color:#fff;font-size:1.4rem;"></ion-icon>
+                </div>
+                <span style="font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Circle</span>
             </div>
 
-            <form asp-controller="Authentication" asp-action="Login" method="post" class="space-y-7 text-sm text-black font-medium">
-                <div class="col-span-2 text-red-500" asp-validation-summary="ModelOnly"></div>
+            @* Heading *@
+            <div>
+                <h2 class="text-2xl font-bold mb-1" style="color:#1e1b4b;">Welcome back 👋</h2>
+                <p class="text-sm" style="color:#64748b;">
+                    Don't have an account?
+                    <a asp-controller="Authentication" asp-action="Register"
+                       style="color:#6366f1;font-weight:600;text-decoration:none;">Create one free</a>
+                </p>
+            </div>
+
+            @* Form *@
+            <form asp-controller="Authentication" asp-action="Login" method="post" class="space-y-5">
+                <div class="text-red-500 text-sm" asp-validation-summary="ModelOnly"></div>
+
                 <div>
-                    <label asp-for="Email">Email address</label>
-                    <div class="mt-2.5">
-                        <input asp-for="Email" id="email" name="email" type="email" placeholder="Email" required="" class="!w-full" />
-                        <span asp-validation-for="Email" class="text-red-500 text-xs mt-1"></span>
-                    </div>
+                    <label asp-for="Email" class="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                           style="color:#94a3b8;">Email Address</label>
+                    <input asp-for="Email" type="email" placeholder="you@example.com"
+                           required class="w-full"
+                           style="border-radius:12px;border:1.5px solid rgba(99,102,241,0.15);padding:11px 14px;font-size:0.9rem;transition:all 0.25s;background:rgba(99,102,241,0.03);" />
+                    <span asp-validation-for="Email" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
+
                 <div>
-                    <label asp-for="Password">Password</label>
-                    <div class="mt-2.5">
-                        <input asp-for="Password" id="password" name="password" type="password" placeholder="***" required="" class="!w-full" />
-                        <span asp-validation-for="Password" class="text-red-500 text-xs mt-1"></span>
-                    </div>
+                    <label asp-for="Password" class="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                           style="color:#94a3b8;">Password</label>
+                    <input asp-for="Password" type="password" placeholder="••••••••"
+                           required class="w-full"
+                           style="border-radius:12px;border:1.5px solid rgba(99,102,241,0.15);padding:11px 14px;font-size:0.9rem;transition:all 0.25s;background:rgba(99,102,241,0.03);" />
+                    <span asp-validation-for="Password" class="text-red-500 text-xs mt-1 block"></span>
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <input id="rememberme" name="rememberme" type="checkbox">
-                        <label for="rememberme" class="font-normal">Remember me</label>
-                    </div>
-                    <a href="#" class="text-blue-700">Forget password</a>
+                    <label class="flex items-center gap-2 text-sm cursor-pointer" style="color:#475569;">
+                        <input type="checkbox" name="rememberme" class="rounded" />
+                        Remember me
+                    </label>
+                    <a href="#" class="text-sm font-semibold" style="color:#6366f1;">Forgot password?</a>
                 </div>
 
-                <div>
-                    <button type="submit" class="button bg-primary text-white w-full">Sign in</button>
+                <button type="submit"
+                        class="w-full py-3 rounded-xl font-bold text-white text-sm transition-all hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0"
+                        style="background:linear-gradient(135deg,#6366f1,#4f46e5);border:none;cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,0.40);">
+                    Sign In →
+                </button>
+
+                @* Divider *@
+                <div class="flex items-center gap-4 text-xs" style="color:#94a3b8;">
+                    <hr class="flex-1" style="border-color:rgba(99,102,241,0.12);">
+                    or continue with
+                    <hr class="flex-1" style="border-color:rgba(99,102,241,0.12);">
                 </div>
 
-                <div class="text-center flex items-center gap-6">
-                    <hr class="flex-1 border-slate-200">
-                    Or continue with
-                    <hr class="flex-1 border-slate-200">
-                </div>
-
-                <div class="flex gap-2">
-                    <a asp-controller="Authentication" asp-action="ExternalLogin" asp-route-provider="Google" class="button flex-1 flex items-center gap-2 bg-primary text-white text-sm"> <ion-icon name="logo-google" class="text-lg"></ion-icon> google </a>
-                    <a asp-controller="Authentication" asp-action="ExternalLogin" asp-route-provider="GitHub" class="button flex-1 flex items-center gap-2 bg-black text-white text-sm"><ion-icon name="logo-github" class="text-lg"></ion-icon> github </a>
+                @* Social Buttons *@
+                <div class="flex gap-3">
+                    <a asp-controller="Authentication" asp-action="ExternalLogin" asp-route-provider="Google"
+                       class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
+                       style="background:#fff;color:#374151;border:1.5px solid rgba(99,102,241,0.15);box-shadow:0 2px 8px rgba(0,0,0,0.06);text-decoration:none;">
+                        <ion-icon name="logo-google" style="font-size:1rem;color:#ea4335;"></ion-icon>
+                        Google
+                    </a>
+                    <a asp-controller="Authentication" asp-action="ExternalLogin" asp-route-provider="GitHub"
+                       class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
+                       style="background:#0d1117;color:#fff;border:1.5px solid #0d1117;box-shadow:0 2px 8px rgba(0,0,0,0.20);text-decoration:none;">
+                        <ion-icon name="logo-github" style="font-size:1rem;"></ion-icon>
+                        GitHub
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 
-    @*image slider*@
-    <div class="flex-1 relative bg-primary max-md:hidden">
-        <div class="relative w-full h-full" tabindex="-1" uk-slideshow="animation: slide; autoplay: true">
+    @* ── Right: Hero Panel ── *@
+    <div class="flex-1 relative max-md:hidden login-brand-panel" style="min-height:100vh;">
 
+        @* Slideshow *@
+        <div class="relative w-full h-full" tabindex="-1" uk-slideshow="animation: slide; autoplay: true">
             <ul class="uk-slideshow-items w-full h-full">
                 <li class="w-full">
-                    <img src="~/images/welcome/welcome-01.png" alt="" class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
-
-                        <div class="absolute bottom-0 w-full uk-transition-slide-bottom-small z-10">
-                            <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative">
-                                <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">Connect with Friends</h4>
-                                <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;">Bridge the gap between miles and moments—connect with friends and weave memories together, one click at a time.</p>
+                    <img src="~/images/welcome/welcome-01.png" alt=""
+                         class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left"
+                         style="opacity:0.55;">
+                    <div class="absolute bottom-0 w-full uk-transition-slide-bottom-small z-10">
+                        <div class="max-w-lg w-full mx-auto pb-20 px-8 relative z-30">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+                                 style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.20);">
+                                <ion-icon name="sparkles-outline" style="color:#fbbf24;"></ion-icon>
+                                <span class="text-xs font-semibold text-white">Social Made Simple</span>
                             </div>
+                            <h4 class="text-white text-3xl font-extrabold mt-3 leading-tight"
+                                uk-slideshow-parallax="y: 600,0,0">Connect with Friends</h4>
+                            <p class="text-white/75 text-base mt-3 leading-7"
+                               uk-slideshow-parallax="y: 800,0,0;">Bridge the gap between miles and moments — connect with friends and weave memories together.</p>
                         </div>
-                        <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>
-                    </li>
-                    <li class="w-full">
-                        <img src="~/images/welcome/welcome-02.png" alt="" class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
-                            <div class="absolute bottom-0 w-full uk-tr ansition-slide-bottom-small z-10">
-                                <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative">
-                                    <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Connect With Friends </h4>
-                                    <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> Rekindle old ties and spark new ones—your next 'Remember when...' moment is just a friend request away.</p>
-                                </div>
-                            </div>
-                            <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>
-                        </li>
-                    </ul>
-
-                    <!-- slide nav -->
-                    <div class="flex justify-center">
-                        <ul class="inline-flex flex-wrap justify-center  absolute bottom-8 gap-1.5 uk-dotnav uk-slideshow-nav"> </ul>
                     </div>
+                    <div class="w-full h-72 bg-gradient-to-t from-black/70 absolute bottom-0 left-0"></div>
+                </li>
+                <li class="w-full">
+                    <img src="~/images/welcome/welcome-02.png" alt=""
+                         class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left"
+                         style="opacity:0.55;">
+                    <div class="absolute bottom-0 w-full uk-transition-slide-bottom-small z-10">
+                        <div class="max-w-lg w-full mx-auto pb-20 px-8 relative z-30">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+                                 style="background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.20);">
+                                <ion-icon name="heart-outline" style="color:#fb7185;"></ion-icon>
+                                <span class="text-xs font-semibold text-white">Share Your Story</span>
+                            </div>
+                            <h4 class="text-white text-3xl font-extrabold mt-3 leading-tight"
+                                uk-slideshow-parallax="y: 800,0,0">Share Your Moments</h4>
+                            <p class="text-white/75 text-base mt-3 leading-7"
+                               uk-slideshow-parallax="y: 800,0,0;">Rekindle old ties and spark new ones — your next 'Remember when…' moment is just a post away.</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-72 bg-gradient-to-t from-black/70 absolute bottom-0 left-0"></div>
+                </li>
+            </ul>
 
-                </div>
+            <div class="flex justify-center absolute bottom-8 w-full">
+                <ul class="inline-flex flex-wrap justify-center gap-1.5 uk-dotnav uk-slideshow-nav"></ul>
             </div>
         </div>
+    </div>
+
+</div>

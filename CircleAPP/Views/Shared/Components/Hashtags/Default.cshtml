@@ -1,21 +1,24 @@
-﻿﻿
 @model List<Hashtag>
 
-<div class="flex justify-between text-black">
-    <h3 class="font-bold text-base">Trends for you</h3>
+<div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+        <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#f97316);display:flex;align-items:center;justify-content:center;">
+            <ion-icon name="trending-up-outline" style="color:#fff;font-size:0.9rem;"></ion-icon>
+        </div>
+        <h3 class="font-bold text-sm" style="color:#1e1b4b;">Trending for You</h3>
+    </div>
 </div>
 
-<div class="space-y-3.5 capitalize text-xs font-normal mt-5 mb-2 text-gray-600">
-
+<div class="space-y-1">
     @foreach (var hashtag in Model)
     {
-        <a>
-            <div class="flex items-center gap-3 p">
-                <div class="flex-1">
-                    <h2 class="font-semibold text-black">@hashtag.Name</h2>
-                    <div class="mt-0.5 mb-2">@hashtag.Count posts</div>
-                </div>
+        <a class="hashtag-row flex items-center gap-3 py-2.5 rounded-xl transition-all px-1">
+            <div class="hashtag-accent-bar"></div>
+            <div class="flex-1 min-w-0">
+                <h2 class="text-sm font-semibold truncate" style="color:#1e1b4b;">@hashtag.Name</h2>
+                <div class="text-xs mt-0.5" style="color:#94a3b8;">@hashtag.Count posts</div>
             </div>
+            <span class="hashtag-count-badge shrink-0">@hashtag.Count</span>
         </a>
     }
 </div>

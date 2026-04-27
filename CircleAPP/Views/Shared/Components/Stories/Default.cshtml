@@ -1,42 +1,308 @@
-﻿@model List<Story>
+@model List<Story>
 
-
-            @* stories *@
-            <div class="mb-8">
-                <h3 class="font-extrabold text-2xl  text-black hidden">Stories</h3>
-
-                <div class="relative" tabindex="-1" uk-slider="auto play: true;finite: true" uk-lightbox="">
-                    <div class="py-5 uk-slider-container">
-                        <ul class="uk-slider-items w-[calc(100%+14px)]" uk-scrollspy="target: > li; cls: uk-animation-scale-up; delay: 20;repeat:true">
-
-                            <li class="md:pr-3" uk-scrollspy-class="uk-animation-fade">
-                                <div class="md:w-16 md:h-16 w-12 h-12 rounded-full relative border-2 border-dashed grid place-items-center bg-slate-200 border-slate-300 shrink-0"
-                                     uk-toggle="target: #create-story">
-                                    <ion-icon name="camera" class="text-2xl"></ion-icon>
-                                </div>
-                            </li>
-
-                            @foreach (var story in Model)
-                            {
-                                <li class="md:pr-3 pr-2 hover:scale-[1.15] hover:-rotate-2 duration-300">
-                                    <a href="@story.ImageUrl"
-                                           data-uk-lightbox="animation: slide"
-                                           data-caption="@story.User.FullName">
-            
-                                        <div class="md:w-16 md:h-16 w-12 h-12 relative md:border-4 border-2 shadow border-white rounded-full overflow-hidden">
-                                            <img src="@story.User.ProfilePictureUrl"
-                                                 alt="@story.User.FullName"
-                                                 class="w-full h-full object-cover" />
-                                        </div>
-                                    </a>
-                                </li>
-                            }
-
-                            <li class="md:pr-3 pr-2">
-                                <div class="md:w-16 md:h-16 w-12 h-12 bg-slate-200/60 rounded-full animate-pulse"></div>
-                            </li>
-                        </ul>
+<div class="mb-8">
+    <h3 class="font-extrabold text-2xl text-black hidden">Stories</h3>
+    
+    @* UIkit Slider Container *@
+    <div class="relative" tabindex="-1" uk-slider="autoplay: true; finite: true" uk-lightbox="">
+        <div class="py-5 uk-slider-container">
+            <ul class="uk-slider-items w-[calc(100%+14px)]" uk-scrollspy="target: > li; cls: uk-animation-scale-up; delay: 20; repeat: true">
+                
+                @* Add Story Button *@
+                <li class="md:pr-3 pr-2" uk-scrollspy-class="uk-animation-fade">
+                    <div class="story-add-container" uk-toggle="target: #create-story">
+                        <div class="story-add-ring">
+                            <div class="story-add-btn">
+                                <ion-icon name="add-outline" class="text-2xl"></ion-icon>
+                            </div>
+                        </div>
+                        <span class="story-label story-label-add">Your Story</span>
                     </div>
-                </div>
-            </div>
-       
+                </li>
+
+                @* Story Items *@
+                @foreach (var story in Model)
+                {
+                    var storyUserPic = string.IsNullOrEmpty(story.User?.ProfilePictureUrl)
+                        ? Url.Content("~/images/avatar/user.png")
+                        : Url.Content("~/" + story.User.ProfilePictureUrl.TrimStart('/').Replace("\\", "/"));
+
+                    <li class="md:pr-3 pr-2">
+                        <div class="story-container">
+                            <a href="@story.ImageUrl"
+                               data-uk-lightbox="animation: slide"
+                               data-caption="@story.User?.FullName"
+                               class="story-link">
+                                <div class="story-ring">
+                                    <img src="@storyUserPic"
+                                         alt="@story.User?.FullName"
+                                         class="story-avatar" />
+                                </div>
+                            </a>
+                            <span class="story-label">@(story.User?.FullName?.Split(' ')[0] ?? "User")</span>
+                        </div>
+                    </li>
+                }
+
+                @* Skeleton Loader *@
+                <li class="md:pr-3 pr-2">
+                    <div class="story-skeleton">
+                        <div class="skeleton-ring"></div>
+                        <div class="skeleton-label"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        @* Slider Navigation Arrows *@
+        <a class="nav-arrow nav-prev" href="#" uk-slider-item="previous">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+        </a>
+        <a class="nav-arrow nav-next" href="#" uk-slider-item="next">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Story Container */
+    .story-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .story-container:hover {
+        transform: scale(1.1) rotate(-2deg);
+    }
+
+    /* Story Add Container */
+    .story-add-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .story-add-container:hover .story-add-ring {
+        transform: scale(1.05);
+        border-color: #6366f1;
+    }
+
+    /* Story Ring (Gradient Border) */
+    .story-ring {
+        position: relative;
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        padding: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    @@media (max-width: 768px) 
+    {
+        .story-ring {
+            width: 56px;
+            height: 56px;
+        }
+    }
+
+    .story-link:hover .story-ring {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Story Avatar */
+    .story-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+    }
+
+    /* Add Story Ring */
+    .story-add-ring {
+        position: relative;
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        border: 3px dashed #cbd5e1;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    @@media (max-width: 768px) {
+        .story-add-ring {
+            width: 56px;
+            height: 56px;
+        }
+    }
+
+    .story-add-btn {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6366f1;
+    }
+
+    /* Story Labels */
+    .story-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #334155;
+        text-align: center;
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: color 0.2s;
+    }
+
+    .story-label-add {
+        color: #6366f1;
+        font-weight: 600;
+    }
+
+    .story-container:hover .story-label {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    /* Skeleton Loader */
+    .story-skeleton {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.5;
+    }
+
+    .skeleton-ring {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, #e0e7ff 25%, #c7d2fe 50%, #e0e7ff 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+    }
+
+    @@media (max-width: 768px) {
+        .skeleton-ring {
+            width: 56px;
+            height: 56px;
+        }
+    }
+
+    .skeleton-label {
+        width: 50px;
+        height: 10px;
+        border-radius: 4px;
+        background: #e0e7ff;
+        animation: shimmer 1.5s infinite;
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    /* Navigation Arrows */
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: #334155;
+        transition: all 0.3s ease;
+        z-index: 10;
+        opacity: 0;
+    }
+
+    .relative:hover .nav-arrow {
+        opacity: 1;
+    }
+
+    .nav-prev {
+        left: -20px;
+    }
+
+    .nav-next {
+        right: -20px;
+    }
+
+    .nav-arrow:hover {
+        background: #6366f1;
+        color: white;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    .nav-arrow ion-icon {
+        font-size: 1.25rem;
+    }
+
+    /* Smooth transitions */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Remove default link styles */
+    .story-link {
+        text-decoration: none;
+        display: block;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .nav-arrow {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-prev {
+            left: -10px;
+        }
+
+        .nav-next {
+            right: -10px;
+        }
+    }
+     /* Optional: Custom hover effects */
+    .hover\:scale-\[1\.15\]:hover {
+        transform: scale(1.15);
+    }
+    
+    .hover\:-rotate-2:hover {
+        transform: rotate(-2deg);
+    }
+</style>

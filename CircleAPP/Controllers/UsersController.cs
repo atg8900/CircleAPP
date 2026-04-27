@@ -22,6 +22,15 @@ namespace CircleAPP.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Profile(int userId)
+        {
+            var vm = await  _userService.GetUserProfileAsync(userId);
+
+            if (vm.User == null) return NotFound();
+
+            return View(vm);
+        }
+
         public async Task<IActionResult> Details(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -35,5 +44,6 @@ namespace CircleAPP.Controllers
 
             return View(userProfileVM);
         }
+
     }
 }

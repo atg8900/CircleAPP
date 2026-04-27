@@ -2,6 +2,7 @@
 using CircleAPP.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CircleAPP.ViewComponents
 {
@@ -15,7 +16,8 @@ namespace CircleAPP.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var allStories = await _storiesService.GetAllStoriesAsync();
+            var userId = int.Parse(UserClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier));
+            var allStories = await _storiesService.GetAllStoriesAsync(userId);
             return View(allStories);
         }
     }

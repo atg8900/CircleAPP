@@ -16,14 +16,22 @@ namespace CircleApp.Data.Services
         {
             _context = context;
         }
-        public async Task<List<Story>> GetAllStoriesAsync()
-        {
-            var allStories = await _context.Stories
-                .Where(s => s.DateCreated >= DateTime.UtcNow.AddHours(-24))
-                .Include(s => s.User).
-                ToListAsync();
-            return allStories;
-        }
+public async Task<List<Story>> GetAllStoriesAsync(int userId)
+{
+    // Get IDs of all users who are friends with the logged-in user
+    var friendIds = await _context.Friendships
+        .Where(f => f.SenderId == userId || f.ReceiverId == userId)
+        .Select(f => f.SenderId == userId ? f.ReceiverId : f.SenderId)
+        .ToListAsync();
+
+    var allStories = await _context.Stories
+        .Where(s => s.DateCreated >= DateTime.UtcNow.AddHours(-24)
+                 && (s.UserId == userId || friendIds.Contains(s.UserId)))
+        .Include(s => s.User)
+        .ToListAsync();
+
+    return allStories;
+}
         public async Task<Story> CreateStoryAsync(Story story)
         {
            
